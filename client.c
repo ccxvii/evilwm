@@ -126,11 +126,9 @@ void select_client(Client *c) {
 		XSetWindowBorder(dpy, current->parent, current->screen->bg.pixel);
 	if (c) {
 		unsigned long bpixel;
-#ifdef VWM
 		if (is_fixed(c))
 			bpixel = c->screen->fc.pixel;
 		else
-#endif
 			bpixel = c->screen->fg.pixel;
 		XSetWindowBorder(dpy, c->parent, bpixel);
 		XInstallColormap(dpy, c->cmap);
@@ -140,7 +138,6 @@ void select_client(Client *c) {
 	ewmh_set_net_active_window(c);
 }
 
-#ifdef VWM
 void client_to_vdesk(Client *c, unsigned int vdesk) {
 	if (valid_vdesk(vdesk)) {
 		c->vdesk = vdesk;
@@ -153,7 +150,6 @@ void client_to_vdesk(Client *c, unsigned int vdesk) {
 		select_client(current);
 	}
 }
-#endif
 
 void remove_client(Client *c) {
 	LOG_ENTER("remove_client(window=%lx, %s)", c->window, c->remove ? "withdrawing" : "wm quitting");

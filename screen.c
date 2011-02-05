@@ -236,9 +236,7 @@ static void snap_client(Client *c) {
 		ci = iter->data;
 		if (ci == c) continue;
 		if (ci->screen != c->screen) continue;
-#ifdef VWM
 		if (!is_fixed(ci) && ci->vdesk != c->screen->vdesk) continue;
-#endif
 		if (ci->is_dock && !c->screen->docks_visible) continue;
 		if (ci->y - ci->border - c->border - c->height - c->y <= opt_snap && c->y - c->border - ci->border - ci->height - ci->y <= opt_snap) {
 			dx = absmin(dx, ci->x + ci->width - c->x + c->border + ci->border);
@@ -420,13 +418,10 @@ void next(void) {
 		if (newc == current)
 			return;
 	}
-#ifdef VWM
 	/* NOTE: Checking against newc->screen->vdesk implies we can Alt+Tab
 	 * across screen boundaries.  Is this what we want? */
 	while ((!is_fixed(newc) && (newc->vdesk != newc->screen->vdesk)) || (newc->is_dock && !newc->screen->docks_visible));
-#else
-	while (0);
-#endif
+
 	if (!newc)
 		return;
 	client_show(newc);
@@ -439,7 +434,6 @@ void next(void) {
 	discard_enter_events(newc);
 }
 
-#ifdef VWM
 void switch_vdesk(ScreenInfo *s, unsigned int v) {
 	struct list *iter;
 #ifdef DEBUG
@@ -476,7 +470,6 @@ void switch_vdesk(ScreenInfo *s, unsigned int v) {
 	LOG_DEBUG("%d hidden, %d raised\n", hidden, raised);
 	LOG_LEAVE();
 }
-#endif /* def VWM */
 
 void set_docks_visible(ScreenInfo *s, int is_visible) {
 	struct list *iter;
@@ -489,14 +482,10 @@ void set_docks_visible(ScreenInfo *s, int is_visible) {
 			continue;
 		if (c->is_dock) {
 			if (is_visible) {
-#ifdef VWM
 				if (is_fixed(c) || (c->vdesk == s->vdesk)) {
-#endif
 					client_show(c);
 					client_raise(c);
-#ifdef VWM
 				}
-#endif
 			} else {
 				client_hide(c);
 			}
