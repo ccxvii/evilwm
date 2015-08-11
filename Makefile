@@ -98,7 +98,7 @@ INSTALL_PROGRAM = $(INSTALL) -m 0755 $(INSTALL_STRIP)
 # You shouldn't need to change anything beyond this point
 
 version = 1.1.1
-distname = evilwm-$(version)
+distdir = evilwm-$(version)
 
 # Generally shouldn't be overridden:
 #  _SVID_SOURCE for strdup and putenv
@@ -141,16 +141,16 @@ uninstall:
 
 .PHONY: dist
 dist:
-	git archive --format=tar --prefix=$(distname)/ HEAD > ../$(distname).tar
-	gzip -f9 ../$(distname).tar
+	git archive --format=tar --prefix=$(distdir)/ HEAD > $(distdir).tar
+	gzip -f9 $(distdir).tar
 
 .PHONY: debuild
 debuild: dist
-	-cd ..; rm -rf $(distname)/ $(distname).orig/
-	cd ..; mv $(distname).tar.gz evilwm_$(version).orig.tar.gz
+	-cd ..; rm -rf $(distdir)/ $(distdir).orig/
+	mv $(distdir).tar.gz ../evilwm_$(version).orig.tar.gz
 	cd ..; tar xfz evilwm_$(version).orig.tar.gz
-	rsync -axH debian --exclude='debian/.git/' --exclude='debian/_darcs/' ../$(distname)/
-	cd ../$(distname); debuild
+	rsync -axH debian --exclude='debian/.git/' --exclude='debian/_darcs/' ../$(distdir)/
+	cd ../$(distdir); debuild
 
 .PHONY: clean
 clean:
