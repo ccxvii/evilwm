@@ -188,6 +188,7 @@ int main(int argc, char *argv[]) {
 			ewmh_deinit_screen(&screens[i]);
 			XFreeGC(dpy, screens[i].invert_gc);
 			XInstallColormap(dpy, DefaultColormap(dpy, i));
+			free(screens[i].display);
 		}
 	}
 	free(screens);
