@@ -101,11 +101,9 @@ version = 1.1.1
 distdir = evilwm-$(version)
 
 # Generally shouldn't be overridden:
-#  _SVID_SOURCE for strdup and putenv
-#  _POSIX_C_SOURCE=200112L for sigaction
+#  _XOPEN_SOURCE=700 incorporates POSIX.1-2008, for putenv, sigaction and strdup
 EVILWM_CPPFLAGS = $(CPPFLAGS) $(OPT_CPPFLAGS) -DVERSION=\"$(version)\" \
-	-D_SVID_SOURCE=1 \
-	-D_POSIX_C_SOURCE=200112L
+	-D_XOPEN_SOURCE=700
 EVILWM_CFLAGS = -std=c99 $(CFLAGS) $(WARN)
 EVILWM_LDFLAGS = $(LDFLAGS)
 EVILWM_LDLIBS = -lX11 $(OPT_LDLIBS) $(LDLIBS)
