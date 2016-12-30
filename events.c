@@ -288,7 +288,7 @@ static void handle_configure_request(XConfigureRequestEvent *e) {
 			discard_enter_events(c);
 		}
 	} else {
-		LOG_XENTER("XConfigureWindow(window=%lx, value_mask=%lx)", (unsigned int)e->window, e->value_mask);
+		LOG_XENTER("XConfigureWindow(window=%lx, value_mask=%lx)", (unsigned long)e->window, e->value_mask);
 		XConfigureWindow(dpy, e->window, e->value_mask, &wc);
 		LOG_XLEAVE();
 	}
@@ -297,7 +297,7 @@ static void handle_configure_request(XConfigureRequestEvent *e) {
 static void handle_map_request(XMapRequestEvent *e) {
 	Client *c = find_client(e->window);
 
-	LOG_ENTER("handle_map_request(window=%lx)", e->window);
+	LOG_ENTER("handle_map_request(window=%lx)", (unsigned long)e->window);
 	if (c) {
 		if (!is_fixed(c) && c->vdesk != c->screen->vdesk)
 			switch_vdesk(c->screen, c->vdesk);
@@ -314,7 +314,7 @@ static void handle_map_request(XMapRequestEvent *e) {
 static void handle_unmap_event(XUnmapEvent *e) {
 	Client *c = find_client(e->window);
 
-	LOG_ENTER("handle_unmap_event(window=%lx)", e->window);
+	LOG_ENTER("handle_unmap_event(window=%lx)", (unsigned long)e->window);
 	if (c) {
 		if (c->ignore_unmap) {
 			c->ignore_unmap--;
@@ -343,7 +343,7 @@ static void handle_property_change(XPropertyEvent *e) {
 	Client *c = find_client(e->window);
 
 	if (c) {
-		LOG_ENTER("handle_property_change(window=%lx, atom=%s)", e->window, debug_atom_name(e->atom));
+		LOG_ENTER("handle_property_change(window=%lx, atom=%s)", (unsigned long)e->window, debug_atom_name(e->atom));
 		if (e->atom == XA_WM_NORMAL_HINTS) {
 			get_wm_normal_hints(c);
 			LOG_DEBUG("geometry=%dx%d+%d+%d\n", c->width, c->height, c->x, c->y);
@@ -401,7 +401,7 @@ static void handle_client_message(XClientMessageEvent *e) {
 	ScreenInfo *s = find_current_screen();
 	Client *c;
 
-	LOG_ENTER("handle_client_message(window=%lx, format=%d, type=%s)", e->window, e->format, debug_atom_name(e->message_type));
+	LOG_ENTER("handle_client_message(window=%lx, format=%d, type=%s)", (unsigned long)e->window, e->format, debug_atom_name(e->message_type));
 
 	if (e->message_type == xa_net_current_desktop) {
 		switch_vdesk(s, e->data.l[0]);

@@ -26,7 +26,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 	XClassHint *class;
 	unsigned int window_type;
 
-	LOG_ENTER("make_new_client(window=%lx)", w);
+	LOG_ENTER("make_new_client(window=%lx)", (unsigned long)w);
 
 	XGrabServer(dpy);
 
@@ -206,7 +206,7 @@ static void init_geometry(Client *c) {
 	get_window_type(c);
 
 	/* Get current window attributes */
-	LOG_XENTER("XGetWindowAttributes(window=%lx)", c->window);
+	LOG_XENTER("XGetWindowAttributes(window=%lx)", (unsigned long)c->window);
 	XGetWindowAttributes(dpy, c->window, &attr);
 	LOG_XDEBUG("(%s) %dx%d+%d+%d, bw = %d\n", map_state_string(attr.map_state), attr.width, attr.height, attr.x, attr.y, attr.border_width);
 	LOG_XLEAVE();
@@ -292,7 +292,7 @@ long get_wm_normal_hints(Client *c) {
 	long dummy;
 	size = XAllocSizeHints();
 
-	LOG_XENTER("XGetWMNormalHints(window=%lx)", c->window);
+	LOG_XENTER("XGetWMNormalHints(window=%lx)", (unsigned long)c->window);
 	XGetWMNormalHints(dpy, c->window, size, &dummy);
 	debug_wm_normal_hints(size);
 	LOG_XLEAVE();
@@ -378,7 +378,7 @@ static const char *gravity_string(int gravity) {
 
 static void debug_wm_normal_hints(XSizeHints *size) {
 	if (size->flags & 15) {
-		LOG_XDEBUG("");
+		LOG_INDENT();
 		if (size->flags & USPosition) {
 			LOG_XDEBUG_("USPosition ");
 		}

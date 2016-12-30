@@ -152,7 +152,7 @@ void client_to_vdesk(Client *c, unsigned int vdesk) {
 }
 
 void remove_client(Client *c) {
-	LOG_ENTER("remove_client(window=%lx, %s)", c->window, c->remove ? "withdrawing" : "wm quitting");
+	LOG_ENTER("remove_client(window=%lx, %s)", (unsigned long)c->window, c->remove ? "withdrawing" : "wm quitting");
 
 	XGrabServer(dpy);
 	ignore_xerror = 1;

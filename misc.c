@@ -57,7 +57,7 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 	/* If this error actually occurred while setting up the new
 	 * window, best let make_new_client() know not to bother */
 	if (initialising != None && e->resourceid == initialising) {
-		LOG_DEBUG("error caught while initialising window=%lx\n", initialising);
+		LOG_DEBUG("error caught while initialising window=%lx\n", (unsigned long)initialising);
 		initialising = None;
 		LOG_LEAVE();
 		return 0;
