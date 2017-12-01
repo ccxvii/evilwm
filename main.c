@@ -214,9 +214,9 @@ static void *xmalloc(size_t size) {
 }
 
 /* set up DISPLAY environment variable to use */
-static char* screen_to_display_str(int num) {
+static char *screen_to_display_str(int num) {
 	char *ds = DisplayString(dpy);
-	char *display = xmalloc(14 + strlen(ds));
+	char *display = xmalloc(20 + strlen(ds));
 	strcpy(display, "DISPLAY=");
 	strcat(display, ds);
 	char *colon = strrchr(display, ':');
@@ -226,7 +226,7 @@ static char* screen_to_display_str(int num) {
 	char *dot = strchr(colon, '.');
 	if (!dot)
 		dot = colon + strlen(colon);
-	snprintf(dot, 5, ".%d", num);
+	snprintf(dot, 12, ".%d", num);
 
 	return display;
 }
