@@ -100,12 +100,7 @@ typedef struct {
 		            None, None); \
 	} while (0)
 #define setmouse(w, x, y) XWarpPointer(dpy, None, w, 0, 0, 0, 0, x, y)
-#define get_mouse_position(xp,yp,root) do { \
-		Window dw; \
-		int di; \
-		unsigned int dui; \
-		XQueryPointer(dpy, root, &dw, &dw, xp, yp, &di, &di, &dui); \
-	} while (0)
+Bool get_pointer_root_xy(Display *display, Window w, int *x, int *y); // Wraps XQueryPointer()
 
 #define is_fixed(c) (c->vdesk == VDESK_FIXED)
 #define add_fixed(c) c->vdesk = VDESK_FIXED

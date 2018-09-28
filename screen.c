@@ -278,7 +278,7 @@ void drag(Client *c) {
 
 	if (!grab_pointer(c->screen->root, MouseMask, move_curs)) return;
 	client_raise(c);
-	get_mouse_position(&x1, &y1, c->screen->root);
+	get_pointer_root_xy(dpy, c->screen->root, &x1, &y1);
 #ifdef INFOBANNER_MOVERESIZE
 	create_info_window(c);
 #endif
@@ -609,4 +609,17 @@ void grab_keys_for_screen(ScreenInfo *s) {
 		grab_keysym(s->root, grabmask1 | altmask, alt_keys_to_grab[i]);
 	}
 	grab_keysym(s->root, grabmask2, KEY_NEXT);
+}
+
+// Wrap XQueryPointer()
+Bool get_pointer_root_xy(Display *display, Window w, int *x, int *y) {
+	Window root_r, child_r;
+	int root_x_r, root_y_r;
+	int win_x_r, win_y_r;
+	unsigned mask_r;
+	if (!x)
+		x = &root_x_r;
+	if (!y)
+		y = &root_y_r;
+	return XQueryPointer(display, w, &root_r, &child_r, x, y, &win_x_r, &win_y_r, &mask_r);
 }

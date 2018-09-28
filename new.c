@@ -248,7 +248,7 @@ static void init_geometry(Client *c) {
 		int xmax = DisplayWidth(dpy, c->screen->screen);
 		int ymax = DisplayHeight(dpy, c->screen->screen);
 		int x, y;
-		get_mouse_position(&x, &y, c->screen->root);
+		get_pointer_root_xy(dpy, c->screen->root, &x, &y);
 		c->x = (x * (xmax - c->border - c->width)) / xmax;
 		c->y = (y * (ymax - c->border - c->height)) / ymax;
 		send_config(c);
