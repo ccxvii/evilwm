@@ -157,7 +157,10 @@ void make_new_client(Window w, ScreenInfo *s) {
 	{
 		client_show(c);
 		client_raise(c);
-		if (!(window_type & (EWMH_WINDOW_TYPE_DOCK|EWMH_WINDOW_TYPE_NOTIFICATION))) {
+		// Don't focus windows that aren't on the same display as the
+		// pointer.
+		if (get_pointer_root_xy(dpy, c->window, NULL, NULL) &&
+		    !(window_type & (EWMH_WINDOW_TYPE_DOCK|EWMH_WINDOW_TYPE_NOTIFICATION))) {
 			select_client(c);
 #ifdef WARP_POINTER
 			setmouse(c->window, c->width + c->border - 1,
