@@ -49,6 +49,9 @@ OPT_CPPFLAGS += -DVWM
 
 OPT_CPPFLAGS += -DNDEBUG  # disable asserts
 
+# Uncomment to map KEY_TOPLEFT to XK_z (suitable for quertz keyboards)
+#OPT_CPPFLAGS += -DQWERTZ_KEYMAP
+
 ############################################################################
 # Include file and library paths
 
