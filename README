@@ -1,21 +1,22 @@
-evilwm 1.1 by Ciaran Anscomb <evilwm@6809.org.uk>
+evilwm 1.2 by Ciaran Anscomb <evilwm@6809.org.uk>
 
 evilwm is a minimalist window manager for the X Window System.
 
-The name evil came from Stuart 'Stuii' Ford, who thinks that any software
-I use must be evil and masochistic.  In reality, this window manager is
-clean and easy to use.
+Minimalist window manager for the X Window System.
+
+'Minimalist' doesn't mean it's too bare to be usable; just that it omits
+a lot of the stuff that make others unusable.
 
 
 FEATURES
 
- * No window decorations apart from a simple 1 pixel border.
- * No icons.
+ * No title bar, no icons.
+ * Simple 1-pixel (configurable) border.
+ * Reasonable EWMH support.
  * Good keyboard control, including repositioning and maximise toggles.
- * Solid window drags (optional - may be slow on old machines).
  * Virtual desktops.
- * Small binary size (even with everything turned on).
- * Reasonable EWMH support (though not yet fully compliant).
+ * Snap-to-border.
+ * Small binary.
  * Configuration file read on startup.
 
 
@@ -81,7 +82,7 @@ F              Fix or unfix window.
 1 - 8          Switch virtual desktop.
 Left           Previous virtual desktop.
 Right          Next virtual desktop.
-A              Switch to the most recently unmapped virtual desktop.
+A              Swap to the previously selected virtual desktop.
 
 In addition to the above, Alt+Tab can be used to cycle through windows
 on screen.
@@ -94,19 +95,25 @@ Foster.  His code is very clean and, in later versions, very well
 commented.  I'd recommend it if you want to learn more about window
 manager theory (or indeed want title bars, etc ;).
 
+I've not really kept track of how much of that original code remains,
+so his license text remains below.
+
 http://www.red-bean.com/~decklin/aewm/
                - aewm homepage
 
 
 LICENCE
 
-evilwm 1.1
-Copyright (C) 1999-2015 Ciaran Anscomb <evilwm@6809.org.uk>
+evilwm 1.2
+Copyright (C) 1999-2021 Ciaran Anscomb <evilwm@6809.org.uk>
 
 This is free software.  You can do what you want to it, but if it
 breaks something, you get to pay for the counselling.  The code was
 originally based on aewm, so this is distributed under the same terms,
 which follow.
+
+Individual files from elsewhere may contain licence text specific to
+those files.
 
 
 AEWM LICENCE

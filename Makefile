@@ -50,6 +50,8 @@ OPT_CPPFLAGS += -DVWM
 #OPT_CPPFLAGS += -DDEBUG   # miscellaneous debugging
 #OPT_CPPFLAGS += -DXDEBUG  # show some X calls
 
+OPT_CPPFLAGS += -DNDEBUG  # disable asserts
+
 ############################################################################
 # Include file and library paths
 
@@ -97,19 +99,21 @@ INSTALL_PROGRAM = $(INSTALL) -m 0755 $(INSTALL_STRIP)
 ############################################################################
 # You shouldn't need to change anything beyond this point
 
-version = 1.1.1
+version = 1.2.0
 distdir = evilwm-$(version)
 
 # Generally shouldn't be overridden:
 #  _XOPEN_SOURCE=700 incorporates POSIX.1-2008, for putenv, sigaction and strdup
 EVILWM_CPPFLAGS = $(CPPFLAGS) $(OPT_CPPFLAGS) -DVERSION=\"$(version)\" \
-	-D_XOPEN_SOURCE=700
+	-D_XOPEN_SOURCE=700 -DHAVE_CONFIG_H
 EVILWM_CFLAGS = -std=c99 $(CFLAGS) $(WARN)
 EVILWM_LDFLAGS = $(LDFLAGS)
 EVILWM_LDLIBS = -lX11 $(OPT_LDLIBS) $(LDLIBS)
 
-HEADERS = evilwm.h keymap.h list.h log.h xconfig.h
-OBJS = client.o events.o ewmh.o list.o main.o misc.o new.o screen.o xconfig.o
+HEADERS = client.h config.h display.h events.h evilwm.h keymap.h list.h \
+	log.h screen.h util.h xalloc.h xconfig.h
+OBJS = client.o client_move.o client_new.o display.o events.o ewmh.o \
+	list.o log.o main.o screen.o util.o xconfig.o xmalloc.o
 
 .PHONY: all
 all: evilwm$(EXEEXT)

@@ -1,12 +1,20 @@
 /* evilwm - Minimalist Window Manager for X
- * Copyright (C) 1999-2015 Ciaran Anscomb <evilwm@6809.org.uk>
+ * Copyright (C) 1999-2021 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
-#ifndef __LOG_H__
-#define __LOG_H__
+// Debugging macros and support functions.
+
+#ifndef EVILWM_LOG_H__
+#define EVILWM_LOG_H__
 
 #if defined(STDIO) || defined(DEBUG) || defined(XDEBUG)
 # include <stdio.h>
+#endif
+
+#ifdef XDEBUG
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #endif
 
 #ifdef DEBUG
@@ -21,6 +29,13 @@ extern int log_indent;
 # define LOG_ERROR(...)
 #endif
 
+// Debug macros:
+//
+// LOG_ENTER(...)   on function entry; prints message, increases indent level
+// LOG_LEAVE(...)   on function exit; decreases indent level, prints message
+// LOG_DEBUG(...)   print message at current indent level
+// LOG_DEBUG_(...)  print continuation message (no indent)
+
 #ifdef DEBUG
 # define LOG_INDENT() do { int ii; for (ii = 0; ii < log_indent; ii++) fprintf(stderr, "   "); } while (0)
 # define LOG_ENTER(...) do { LOG_INDENT(); log_indent++; fprintf(stderr, __VA_ARGS__); fprintf(stderr, " at %s:%d\n", __FILE__, __LINE__); } while (0)
@@ -34,6 +49,8 @@ extern int log_indent;
 # define LOG_DEBUG_(...)
 #endif
 
+// X call debugging macros:
+
 #ifdef XDEBUG
 # define LOG_XENTER(...) LOG_ENTER(__VA_ARGS__)
 # define LOG_XLEAVE(...) LOG_LEAVE(__VA_ARGS__)
@@ -46,4 +63,18 @@ extern int log_indent;
 # define LOG_XDEBUG_(...)
 #endif
 
-#endif  /* __LOG_H__ */
+#ifdef XDEBUG
+
+// Print window geometry
+void debug_window_attributes(XWindowAttributes *attr);
+// Dump size hints
+void debug_wm_normal_hints(XSizeHints *size);
+
+#else
+
+# define debug_window_attributes(a)
+# define debug_wm_normal_hints(s)
+
+#endif
+
+#endif

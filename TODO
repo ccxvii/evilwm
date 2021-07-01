@@ -1,11 +1,44 @@
-Desired functionality for 1.1.x:
-   * EWMH support, including:
-        + Client control via root window messages.
-   * A few things can probably cease to be compile-time options.
-   * Better interoperation with Xinerama (David Flynn has some patches
-     for this).
-   * Option for new windows to tile as well as possible.
+# evilwm TODO
 
-Desired functionality for 1.2.x:
 
-   * EWMH compliance.
+## Simpler tasks
+
+Add _NET_WM_STATE_FOCUSED support.
+
+Calculate the response to _NET_REQUEST_FRAME_EXTENTS more accurately.
+
+Set _NET_FRAME_EXTENTS once known, even if not in response to
+_NET_REQUEST_FRAME_EXTENTS.
+
+Consider determining initial vdesk from focussed window.
+
+Investigate whether Alt+Tab across screens makes sense.
+
+
+## Intermediate tasks
+
+Investigate SHAPEd windows for client sweep/drag.  As it stands, non-solid
+drags and all sweeps draw a border by inverting pixels on the screen, erasing
+by re-inverting.  This requires the X server to be grabbed, which is
+undesirable.
+
+Although the current methods work well enough, it would be nice to not have to
+grab the X server so often.  e.g., when adding or removing a client, maintain a
+set of windows that the error handler should treat differently.
+
+
+## Difficult: multi-monitor support
+
+Explicit multi-monitor behaviours based on RandR information.  David Flynn had
+some patches to do similar for Xinerama, but the modern approach seems to be to
+use RandR.
+
+It probably makes sense that switching vdesk should only affect the current
+monitor.
+
+If a monitor is removed, clients should be moved to one that is still visible.
+How to choose?  Maybe determine which still-visible monitor was "closest"?
+
+It would be nice if clients relocated in that way returned to the monitor they
+came from if it is reattached.  Some sort of property to record that
+information that is removed on other user interaction?
