@@ -32,12 +32,17 @@ struct list *list_insert_before(struct list *list, struct list *before, void *da
 	elem->next = before;
 	if (before == list) return elem;
 	for (iter = list; iter; iter = iter->next) {
-		if (!iter->next || iter->next == before) {
+		if (iter->next == before) {
 			iter->next = elem;
-			break;
+			return list;
+		}
+		if (!iter->next) {
+			elem->next = NULL;
+			iter->next = elem;
+			return list;
 		}
 	}
-	return list;
+	abort();
 }
 
 // Add new data to head of list
