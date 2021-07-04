@@ -98,12 +98,11 @@ WARN = -Wall -W -Wstrict-prototypes -Wpointer-arith -Wcast-align \
 # For Cygwin:
 #EXEEXT = .exe
 
-# Override INSTALL_STRIP if you don't want a stripped binary
 INSTALL = install
-INSTALL_STRIP = -s
+STRIP = strip
 INSTALL_DIR = $(INSTALL) -d -m 0755
 INSTALL_FILE = $(INSTALL) -m 0644
-INSTALL_PROGRAM = $(INSTALL) -m 0755 $(INSTALL_STRIP)
+INSTALL_PROGRAM = $(INSTALL) -m 0755
 
 ############################################################################
 # You shouldn't need to change anything beyond this point
@@ -143,6 +142,10 @@ install: evilwm$(EXEEXT)
 	$(INSTALL_FILE) $(src_dir)/evilwm.1 $(DESTDIR)$(man1dir)/
 	$(INSTALL_DIR) $(DESTDIR)$(desktopfilesdir)
 	$(INSTALL_FILE) $(src_dir)/evilwm.desktop $(DESTDIR)$(desktopfilesdir)/
+
+.PHONY: install-strip
+install-strip: install
+	$(STRIP) $(DESTDIR)$(bindir)/evilwm$(EXEEXT)
 
 .PHONY: uninstall
 uninstall:
