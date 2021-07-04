@@ -233,17 +233,25 @@ static void handle_button_event(XButtonEvent *e) {
 
 static void do_window_changes(int value_mask, XWindowChanges *wc, struct client *c,
 		int gravity) {
+	LOG_XENTER("do_window_changes(window=%lx), was: %dx%d+%d+%d", (unsigned long)c->window, c->width, c->height, c->x, c->y);
 	if (gravity == 0)
 		gravity = c->win_gravity_hint;
 	c->win_gravity = gravity;
-	if (value_mask & CWX) c->x = wc->x;
-	if (value_mask & CWY) c->y = wc->y;
+	if (value_mask & CWX) {
+		c->x = wc->x;
+		LOG_XDEBUG("CWX      x=%d\n", wc->x);
+	}
+	if (value_mask & CWY) {
+		c->y = wc->y;
+		LOG_XDEBUG("CWY      y=%d\n", wc->y);
+	}
 	if (value_mask & (CWWidth|CWHeight)) {
 		int dw = 0, dh = 0;
 		if (!(value_mask & (CWX|CWY))) {
 			client_gravitate(c, -c->border);
 		}
 		if (value_mask & CWWidth) {
+			LOG_XDEBUG("CWWidth  width=%d\n", wc->width);
 			int neww = wc->width;
 			if (neww < c->min_width)
 				neww = c->min_width;
@@ -253,6 +261,7 @@ static void do_window_changes(int value_mask, XWindowChanges *wc, struct client 
 			c->width = neww;
 		}
 		if (value_mask & CWHeight) {
+			LOG_XDEBUG("CWHeight height=%d\n", wc->height);
 			int newh = wc->height;
 			if (newh < c->min_height)
 				newh = c->min_height;
@@ -310,6 +319,7 @@ static void do_window_changes(int value_mask, XWindowChanges *wc, struct client 
 	if ((value_mask & (CWX|CWY)) && !(value_mask & (CWWidth|CWHeight))) {
 		send_config(c);
 	}
+	LOG_XLEAVE();
 }
 
 static void handle_configure_request(XConfigureRequestEvent *e) {
