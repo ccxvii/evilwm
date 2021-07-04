@@ -1,3 +1,8 @@
+############################################################################
+# evilwm - minimalist window manager for X11
+# Copyright (C) 1999-2021 Ciaran Anscomb <evilwm@6809.org.uk>
+# see README for license and other details.
+
 # do not include any other makefiles above this line.
 THISMAKEFILE=$(lastword $(MAKEFILE_LIST))
 # allow trivial out-of-tree builds

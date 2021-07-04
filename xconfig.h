@@ -1,4 +1,4 @@
-/* evilwm - Minimalist Window Manager for X
+/* evilwm - minimalist window manager for X11
  * Copyright (C) 1999-2021 Ciaran Anscomb
  * see README for license and other details. */
 
