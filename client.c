@@ -306,6 +306,10 @@ void remove_client(struct client *c) {
 
 	if (c->remove) {
 		LOG_DEBUG("setting WithdrawnState\n");
+		if (c == current) {
+			XSetInputFocus(display.dpy, PointerRoot, RevertToPointerRoot,
+			               CurrentTime);
+		}
 		set_wm_state(c, WithdrawnState);
 		ewmh_withdraw_client(c);
 	} else {
