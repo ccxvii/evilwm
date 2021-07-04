@@ -408,8 +408,10 @@ static int send_xmessage(Window w, Atom a, long x) {
 // parent.
 
 void set_shape(struct client *c) {
-	int bounding_shaped;
-	int i, b;  unsigned u;  /* dummies */
+	Bool bounding_shaped;
+	Bool b;  // dummy
+	int i;  // dummy
+	unsigned u;  // dummy
 
 	if (!display.have_shape) return;
 
