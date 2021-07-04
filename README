@@ -2,16 +2,15 @@ evilwm 1.2 by Ciaran Anscomb <evilwm@6809.org.uk>
 
 evilwm is a minimalist window manager for the X Window System.
 
-Minimalist window manager for the X Window System.
-
-'Minimalist' doesn't mean it's too bare to be usable; just that it omits
-a lot of the stuff that make others unusable.
+evilwm features plenty of mouse and keyboard controls while providing
+a clean display, uncluttered by less useful window furniture (like
+title bars).
 
 
 FEATURES
 
  * No title bar, no icons.
- * Simple 1-pixel (configurable) border.
+ * Simple single-pixel (configurable) border.
  * Reasonable EWMH support.
  * Good keyboard control, including repositioning and maximise toggles.
  * Virtual desktops.
@@ -31,29 +30,28 @@ If you're using a standard X desktop, you can start evilwm by just
 changing your ~/.xinitrc file.  Here's a pretty standard sample file:
 
 -----CUT HERE-----
-[ -f $HOME/.Xdefaults ] && xrdb $HOME/.Xdefaults
-xsetroot -solid \#400040 -cursor_name top_left_arrow
+test -f $HOME/.Xresources && xrdb -merge $HOME/.Xresources
+xsetroot -solid \#400040 -cursor_name left_ptr
 /usr/bin/evilwm -snap 10 &
 exec xclock -digital -padding 2 -g -0+0
 -----CUT HERE-----
 
 Note that in this case 'xclock' is the magic process (the one that if
-you kill it, your session dies).  You could change it around and have
-evilwm be your magic process if you prefer.  Also note that it sets the
+you kill it, your session dies).  A common alternative is to run one of
+the many 'panel' apps as your magic process.  Also note that it sets the
 cursor shape and background colour with standard X tools (evilwm won't
-do this for you - the tools already exist!).
+do this for you).
 
-If you use the GNOME session manager, you can configure it to
-use evilwm as its window manager.  Run gconf-editor and set the
-key /desktop/gnome/session/required_components/windowmanager
-to "evilwm".
+If you use the GNOME session manager, you can configure it to use
+evilwm as its window manager.  Run gconf-editor and set the key
+/desktop/gnome/session/required_components/windowmanager to "evilwm".
 
 
 CONTROLS
 
 You can use the mouse to manipulate windows either by click/dragging
-the 1 pixel border, or by holding down Alt and doing so anywhere in the
-client window.  The controls are:
+the single-pixel border, or by holding down Alt and doing so anywhere
+in the client window.  The controls are:
 
 Button 1       Move window.
 Button 2       Resize window.
@@ -62,8 +60,9 @@ Button 3       Lower window.
 Most keyboard controls are used by holding down Control and Alt, then
 pressing a key.  Available functions are:
 
-Return         Spawn new xterm.
-Escape         Delete current window.
+Return         Spawn new terminal.
+Escape         Delete current window.  Hold shift as well to force kill
+               a client.
 Insert         Lower current window.
 H, J, K, L     Move window left, down, up or right (16 pixels).
                Holding Shift resizes the window instead.
@@ -79,10 +78,10 @@ If compiled with virtual desktop support, these functions are also
 available:
 
 F              Fix or unfix window.
-1 - 8          Switch virtual desktop.
-Left           Previous virtual desktop.
-Right          Next virtual desktop.
-A              Swap to the previously selected virtual desktop.
+1 - 8          Switch to specific virtual desktop.
+Left           Switch to next lower numbered virtual desktop.
+Right          Switch to next higher numbered virtual desktop.
+A              Switch to the previously selected virtual desktop.
 
 In addition to the above, Alt+Tab can be used to cycle through windows
 on screen.
@@ -107,10 +106,9 @@ LICENCE
 evilwm 1.2
 Copyright (C) 1999-2021 Ciaran Anscomb <evilwm@6809.org.uk>
 
-This is free software.  You can do what you want to it, but if it
-breaks something, you get to pay for the counselling.  The code was
-originally based on aewm, so this is distributed under the same terms,
-which follow.
+This is free software.  You can do what you want to it, but if it breaks
+something, you get to pay for the counselling.  The code was originally
+based on aewm, so this is distributed under the same terms, which follow.
 
 Individual files from elsewhere may contain licence text specific to
 those files.
@@ -121,8 +119,8 @@ AEWM LICENCE
 Copyright (c) 1998-2000 Decklin Foster.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS", WITHOUT ANY EXPRESS
-OR IMPLIED WARRANTIES OF ANY KIND. IN NO EVENT SHALL THE AUTHOR BE
-HELD LIABLE FOR ANY DAMAGES CONNECTED WITH THE USE OF THIS PROGRAM.
+OR IMPLIED WARRANTIES OF ANY KIND. IN NO EVENT SHALL THE AUTHOR BE HELD
+LIABLE FOR ANY DAMAGES CONNECTED WITH THE USE OF THIS PROGRAM.
 
 You are granted permission to copy, publish, distribute, and/or sell
 copies of this program and any modified versions or derived works,

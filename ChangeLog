@@ -1,8 +1,11 @@
 Version 1.2.0, unreleased
 
-  * Code reorder.  No functional changes, just better code separation
-    and many more (or better) comments.
+  * Code reorder.  Better code separation and many more/better comments.
+  * Don't focus mapped window if pointer not on same screen [by Ben Stern]
+  * Added QWERTZ_KEYMAP build option [by Thomas Egerer]
   * Remove option to exclude help and error messages.
+  * Set focus to root window when closing current [adapted from Arch patch]
+  * Add tiny configure script to help with Debian multiarch cross-builds.
 
 Version 1.1.1, Mon Jul 13 2015
 
