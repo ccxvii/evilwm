@@ -100,7 +100,6 @@ static struct xconfig_option evilwm_options[] = {
 static unsigned parse_modifiers(char *s);
 static void handle_signal(int signo);
 
-#ifdef STDIO
 static void helptext(void) {
 	puts(
 "usage: evilwm [-display display] [-term termprog] [-fn fontname]\n"
@@ -115,9 +114,6 @@ static void helptext(void) {
 " [-V]"
 	);
 }
-#else
-#define helptext()
-#endif
 
 int main(int argc, char *argv[]) {
 	struct sigaction act;
@@ -141,12 +137,10 @@ int main(int argc, char *argv[]) {
 				|| 0 == strcmp(argv[argn], "--help")) {
 			helptext();
 			exit(0);
-#ifdef STDIO
 		} else if (0 == strcmp(argv[argn], "-V")
 				|| 0 == strcmp(argv[argn], "--version")) {
 			LOG_INFO("evilwm version " VERSION "\n");
 			exit(0);
-#endif
 		} else {
 			helptext();
 			exit(1);

@@ -2,6 +2,7 @@ Version 1.2.0, unreleased
 
   * Code reorder.  No functional changes, just better code separation
     and many more (or better) comments.
+  * Remove option to exclude help and error messages.
 
 Version 1.1.1, Mon Jul 13 2015
 

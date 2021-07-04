@@ -7,27 +7,20 @@
 #ifndef EVILWM_LOG_H__
 #define EVILWM_LOG_H__
 
-#if defined(STDIO) || defined(DEBUG) || defined(XDEBUG)
-# include <stdio.h>
-#endif
+#include <stdio.h>
 
 #ifdef XDEBUG
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+# include <X11/X.h>
+# include <X11/Xlib.h>
+# include <X11/Xutil.h>
 #endif
 
 #ifdef DEBUG
 extern int log_indent;
 #endif
 
-#ifdef STDIO
-# define LOG_INFO(...) printf(__VA_ARGS__);
-# define LOG_ERROR(...) fprintf(stderr, __VA_ARGS__);
-#else
-# define LOG_INFO(...)
-# define LOG_ERROR(...)
-#endif
+#define LOG_INFO(...) printf(__VA_ARGS__);
+#define LOG_ERROR(...) fprintf(stderr, __VA_ARGS__);
 
 // Debug macros:
 //
@@ -52,18 +45,11 @@ extern int log_indent;
 // X call debugging macros:
 
 #ifdef XDEBUG
+
 # define LOG_XENTER(...) LOG_ENTER(__VA_ARGS__)
 # define LOG_XLEAVE(...) LOG_LEAVE(__VA_ARGS__)
 # define LOG_XDEBUG(...) LOG_DEBUG(__VA_ARGS__)
 # define LOG_XDEBUG_(...) LOG_DEBUG_(__VA_ARGS__)
-#else
-# define LOG_XENTER(...)
-# define LOG_XLEAVE(...)
-# define LOG_XDEBUG(...)
-# define LOG_XDEBUG_(...)
-#endif
-
-#ifdef XDEBUG
 
 // Print window geometry
 void debug_window_attributes(XWindowAttributes *attr);
@@ -71,6 +57,11 @@ void debug_window_attributes(XWindowAttributes *attr);
 void debug_wm_normal_hints(XSizeHints *size);
 
 #else
+
+# define LOG_XENTER(...)
+# define LOG_XLEAVE(...)
+# define LOG_XDEBUG(...)
+# define LOG_XDEBUG_(...)
 
 # define debug_window_attributes(a)
 # define debug_wm_normal_hints(s)
