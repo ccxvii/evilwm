@@ -104,6 +104,10 @@ INSTALL_DIR = $(INSTALL) -d -m 0755
 INSTALL_FILE = $(INSTALL) -m 0644
 INSTALL_PROGRAM = $(INSTALL) -m 0755
 
+# If you do not use GNU Make, you may need to comment out this line (and the
+# output from 'configure' will not be used):
+-include config.mk
+
 ############################################################################
 # You shouldn't need to change anything beyond this point
 
@@ -169,3 +173,7 @@ debuild: dist
 .PHONY: clean
 clean:
 	rm -f evilwm$(EXEEXT) $(OBJS)
+
+.PHONY: distclean
+distclean: clean
+	rm -f config.mk
