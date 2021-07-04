@@ -142,13 +142,16 @@ static void recalculate_sweep(struct client *c, int x1, int y1, int x2, int y2, 
 // where available.
 
 void client_resize_sweep(struct client *c, unsigned button) {
+	// Ensure we can grab pointer events.
+	if (!grab_pointer(c->screen->root, display.resize_curs))
+		return;
+
+	// Sweeping always raises.
+	client_raise(c);
+
 	int old_cx = c->x;
 	int old_cy = c->y;
 
-	if (!grab_pointer(c->screen->root, MouseMask, display.resize_curs))
-		return;
-
-	client_raise(c);
 #ifdef INFOBANNER_MOVERESIZE
 	create_info_window(c);
 #endif
@@ -160,7 +163,7 @@ void client_resize_sweep(struct client *c, unsigned button) {
 
 	for (;;) {
 		XEvent ev;
-		XMaskEvent(display.dpy, MouseMask, &ev);
+		XMaskEvent(display.dpy, ButtonPressMask|ButtonReleaseMask|PointerMotionMask, &ev);
 		switch (ev.type) {
 			case MotionNotify:
 				if (ev.xmotion.root != c->screen->root)
@@ -203,8 +206,8 @@ void client_resize_sweep(struct client *c, unsigned button) {
 // limitations as in the sweep() function.
 
 void client_move_drag(struct client *c, unsigned button) {
-	// Ensure we can grab pointer movement events.
-	if (!grab_pointer(c->screen->root, MouseMask, display.move_curs))
+	// Ensure we can grab pointer events.
+	if (!grab_pointer(c->screen->root, display.move_curs))
 		return;
 
 	// Dragging always raises.
@@ -227,7 +230,7 @@ void client_move_drag(struct client *c, unsigned button) {
 
 	for (;;) {
 		XEvent ev;
-		XMaskEvent(display.dpy, MouseMask, &ev);
+		XMaskEvent(display.dpy, ButtonPressMask|ButtonReleaseMask|PointerMotionMask, &ev);
 		switch (ev.type) {
 			case MotionNotify:
 				if (ev.xmotion.root != c->screen->root)

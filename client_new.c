@@ -75,7 +75,7 @@ void client_manage_new(Window w, struct screen *s) {
 		XFree(name);
 
 	window_type = ewmh_get_net_wm_window_type(w);
-	/* Don't manage DESKTOP type windows */
+	// Don't manage DESKTOP type windows
 	if (window_type & EWMH_WINDOW_TYPE_DESKTOP) {
 		XMapWindow(display.dpy, w);
 		XUngrabServer(display.dpy);
@@ -238,8 +238,8 @@ static void init_geometry(struct client *c) {
 	unsigned long *lprop;
 	c->vdesk = c->screen->vdesk;
 	if ( (lprop = get_property(c->window, X_ATOM(_NET_WM_DESKTOP), XA_CARDINAL, &nitems)) ) {
-		/* NB, Xlib not only returns a 32bit value in a long (which may
-		 * not be 32bits), it also sign extends the 32bit value */
+		// NB, Xlib not only returns a 32bit value in a long (which may
+		// not be 32bits), it also sign extends the 32bit value
 		if (nitems && valid_vdesk(lprop[0] & UINT32_MAX)) {
 			c->vdesk = lprop[0] & UINT32_MAX;
 		}
@@ -339,6 +339,26 @@ static void init_geometry(struct client *c) {
 	client_gravitate(c, c->border);
 }
 
+// Wraps XGrabButton() to grab button presses on a window with or without
+// CapsLock or NumLock.
+
+static void grab_button(unsigned button, unsigned modifiers, Window w) {
+	XGrabButton(display.dpy, button, modifiers, w,
+		    False, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeSync, None, None);
+	XGrabButton(display.dpy, button, modifiers|LockMask, w,
+		    False, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeSync, None, None);
+	if (numlockmask) {
+		XGrabButton(display.dpy, button, modifiers|numlockmask, w,
+			    False, ButtonPressMask | ButtonReleaseMask,
+			    GrabModeAsync, GrabModeSync, None, None);
+		XGrabButton(display.dpy, button, modifiers|numlockmask|LockMask, w,
+			    False, ButtonPressMask | ButtonReleaseMask,
+			    GrabModeAsync, GrabModeSync, None, None);
+	}
+}
+
 // Create parent window for a client and reparent.
 
 static void reparent(struct client *c) {
@@ -373,6 +393,6 @@ static void reparent(struct client *c) {
 	XMapWindow(display.dpy, c->window);
 
 	// Grab mouse button actions on the parent window
-	grab_button(c->parent, grabmask2, AnyButton);
-	grab_button(c->parent, grabmask2 | altmask, AnyButton);
+	grab_button(AnyButton, grabmask2, c->parent);
+	grab_button(AnyButton, grabmask2|altmask, c->parent);
 }

@@ -26,26 +26,17 @@ typedef struct {
 #define NET_WM_STATE_ADD        1    /* add/set property */
 #define NET_WM_STATE_TOGGLE     2    /* toggle property  */
 
-// Coding shorthand
+// Grab pointer using specified cursor.  Report button press/release, and
+// pointer motion events.
 
-#define ButtonMask      (ButtonPressMask|ButtonReleaseMask)
-#define MouseMask       (ButtonMask|PointerMotionMask)
-
-#define grab_pointer(w, mask, curs) \
-	(XGrabPointer(display.dpy, w, False, mask, GrabModeAsync, GrabModeAsync, \
+#define grab_pointer(w, curs) \
+	(XGrabPointer(display.dpy, w, False, \
+		      ButtonPressMask|ButtonReleaseMask|PointerMotionMask, \
+		      GrabModeAsync, GrabModeAsync, \
 		      None, curs, CurrentTime) == GrabSuccess)
-#define grab_button(w, mask, button) do { \
-		XGrabButton(display.dpy, button, (mask), w, False, ButtonMask, \
-			    GrabModeAsync, GrabModeSync, None, None); \
-		XGrabButton(display.dpy, button, LockMask|(mask), w, False, ButtonMask,\
-			    GrabModeAsync, GrabModeSync, None, None); \
-		XGrabButton(display.dpy, button, numlockmask|(mask), w, False, \
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
-		XGrabButton(display.dpy, button, numlockmask|LockMask|(mask), w, False,\
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
-	} while (0)
+
+// Move the mouse pointer.
+
 #define setmouse(w, x, y) XWarpPointer(display.dpy, None, w, 0, 0, 0, 0, x, y)
 
 // Error handler interaction
