@@ -65,18 +65,18 @@ OPT_CPPFLAGS += -DNDEBUG  # disable asserts
 
 # Solaris 10:
 #OPT_CPPFLAGS += -I/usr/X11/include
-#LDFLAGS  += -R/usr/X11/lib -L/usr/X11/lib
+#OPT_LDFLAGS += -R/usr/X11/lib -L/usr/X11/lib
 
 # Solaris <= 9 doesn't support RANDR feature above, so disable it there
 # Solaris 9 doesn't fully implement ISO C99 libc, to suppress warnings, use:
 #OPT_CPPFLAGS += -D__EXTENSIONS__
 
 # OpenBSD 6.2
-#LDFLAGS += -L/usr/X11R6/lib
-#CFLAGS  += -I/usr/X11R6/include
+#OPT_CPPFLAGS += -I/usr/X11R6/include
+#OPT_LDFLAGS += -L/usr/X11R6/lib
 
 # Mac OS X:
-#LDFLAGS += -L/usr/X11R6/lib
+#OPT_LDFLAGS += -L/usr/X11R6/lib
 
 ############################################################################
 # Build tools
