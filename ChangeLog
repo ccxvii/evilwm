@@ -1,4 +1,4 @@
-Version 1.2.0, unreleased
+Version 1.2.0, Mon Jul  5 2021
 
   * Code reorder.  Better code separation and many more/better comments.
   * Don't focus mapped window if pointer not on same screen [by Ben Stern]
