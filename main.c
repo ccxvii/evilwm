@@ -106,7 +106,7 @@ static void helptext(void) {
 "              [-fg foreground] [-fc fixed] [-bg background] [-bw borderwidth]\n"
 "              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n"
 "              [-snap num] [-numvdesks num]\n"
-"              [-app name/class] [-g geometry] [-dock] [-v vdesk] [-s]\n"
+"              [-app name/class] [-g geometry] [-dock] [-v vdesk] [-fixed]\n"
 "             "
 #ifdef SOLIDDRAG
 " [-nosoliddrag]"
