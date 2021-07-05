@@ -6,6 +6,7 @@ Version 1.2.0, unreleased
   * Remove option to exclude help and error messages.
   * Set focus to root window when closing current [adapted from Arch patch]
   * Add tiny configure script to help with Debian multiarch cross-builds.
+  * Generate some documentation from HTML source.
 
 Version 1.1.1, Mon Jul 13 2015
 
