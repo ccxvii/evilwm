@@ -120,7 +120,10 @@ void display_open(void) {
 
 	// Get the font used for window info
 	display.font = XLoadQueryFont(display.dpy, option.font);
-	if (!display.font) display.font = XLoadQueryFont(display.dpy, DEF_FONT);
+	if (!display.font) {
+		LOG_DEBUG("failed to load specified font, trying default: %s\n", DEF_FONT);
+		display.font = XLoadQueryFont(display.dpy, DEF_FONT);
+	}
 	if (!display.font) {
 		LOG_ERROR("couldn't find a font to use: try starting with -fn fontname\n");
 		exit(1);
