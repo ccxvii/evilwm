@@ -75,6 +75,6 @@
 .nr PDFOUTLINE.FOLDLEVEL 3
 .\"
 .pdfview /PageMode /UseOutlines
-.pdfinfo /Title evilwm 1.2
+.pdfinfo /Title evilwm 1.3
 .pdfinfo /Author Ciaran Anscomb
 .
