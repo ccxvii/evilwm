@@ -28,7 +28,6 @@ void ewmh_set_allowed_actions(struct client *c);
 void ewmh_remove_allowed_actions(struct client *c);
 void ewmh_withdraw_client(struct client *c);
 
-void ewmh_set_net_active_window(struct client *c);
 void ewmh_set_net_wm_desktop(struct client *c);
 unsigned ewmh_get_net_wm_window_type(Window w);
 void ewmh_set_net_wm_state(struct client *c);

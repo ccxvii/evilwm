@@ -3,8 +3,6 @@
 
 ## Simpler tasks
 
-Add _NET_WM_STATE_FOCUSED support.
-
 Calculate the response to _NET_REQUEST_FRAME_EXTENTS more accurately.
 
 Set _NET_FRAME_EXTENTS once known, even if not in response to

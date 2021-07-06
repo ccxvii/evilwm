@@ -248,6 +248,7 @@ void client_gravitate(struct client *c, int bw) {
 // EWMH properties.
 
 void select_client(struct client *c) {
+	struct client *old_current = current;
 	if (current)
 		XSetWindowBorder(display.dpy, current->parent, current->screen->bg.pixel);
 	if (c) {
@@ -261,7 +262,13 @@ void select_client(struct client *c) {
 		XSetInputFocus(display.dpy, c->window, RevertToPointerRoot, CurrentTime);
 	}
 	current = c;
-	ewmh_set_net_active_window(c);
+	// Update _NET_WM_STATE_FOCUSED for old current and _NET_ACTIVE_WINDOW
+	// on its screen root.
+	if (old_current)
+		ewmh_set_net_wm_state(old_current);
+	// Now do same for new current.
+	if (c)
+		ewmh_set_net_wm_state(c);
 }
 
 // Move a client to a specific vdesk.  If that means it should no longer be
@@ -352,6 +359,9 @@ void remove_client(struct client *c) {
 	// Deselect if this client were previously selected
 	if (current == c) {
 		current = NULL;
+		// Remove _NET_WM_STATE_FOCUSED from client window and
+		// _NET_ACTIVE_WINDOW from screen if necessary.
+		ewmh_set_net_wm_state(c);
 	}
 	free(c);
 

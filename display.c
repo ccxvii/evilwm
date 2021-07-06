@@ -82,8 +82,9 @@ static const char *atom_list[] = {
 	"_NET_WM_STATE",
 	"_NET_WM_STATE_MAXIMIZED_VERT",
 	"_NET_WM_STATE_MAXIMIZED_HORZ",
-	"_NET_WM_STATE_FULLSCREEN",
 	"_NET_WM_STATE_HIDDEN",
+	"_NET_WM_STATE_FULLSCREEN",
+	"_NET_WM_STATE_FOCUSED",
 	"_NET_WM_ALLOWED_ACTIONS",
 	"_NET_WM_ACTION_MOVE",
 	"_NET_WM_ACTION_RESIZE",
@@ -175,8 +176,6 @@ void display_open(void) {
 		display.screens[i].screen = i;
 		screen_init(&display.screens[i]);
 	}
-
-	ewmh_set_net_active_window(NULL);
 
 	LOG_LEAVE();
 }

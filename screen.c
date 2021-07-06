@@ -105,6 +105,7 @@ void screen_init(struct screen *s) {
 	// Grab the various keyboard shortcuts
 	grab_keys_for_screen(s);
 
+	s->active = None;
 	s->docks_visible = 1;
 
 	// Scan all the windows on this screen
@@ -150,8 +151,9 @@ void screen_init(struct screen *s) {
 		X_ATOM(_NET_WM_STATE),
 		X_ATOM(_NET_WM_STATE_MAXIMIZED_VERT),
 		X_ATOM(_NET_WM_STATE_MAXIMIZED_HORZ),
-		X_ATOM(_NET_WM_STATE_FULLSCREEN),
 		X_ATOM(_NET_WM_STATE_HIDDEN),
+		X_ATOM(_NET_WM_STATE_FULLSCREEN),
+		X_ATOM(_NET_WM_STATE_FOCUSED),
 		X_ATOM(_NET_WM_ALLOWED_ACTIONS),
 
 		// Not sure if it makes any sense including every action here
@@ -182,6 +184,9 @@ void screen_init(struct screen *s) {
 	XChangeProperty(display.dpy, s->root, X_ATOM(_NET_CURRENT_DESKTOP),
 			XA_CARDINAL, 32, PropModeReplace,
 			(unsigned char *)&vdesk, 1);
+	XChangeProperty(display.dpy, s->root, X_ATOM(_NET_ACTIVE_WINDOW),
+	                XA_WINDOW, 32, PropModeReplace,
+	                (unsigned char *)&s->active, 1);
 	XChangeProperty(display.dpy, s->root, X_ATOM(_NET_SUPPORTING_WM_CHECK),
 			XA_WINDOW, 32, PropModeReplace,
 			(unsigned char *)&s->supporting, 1);
@@ -194,6 +199,7 @@ void screen_init(struct screen *s) {
 	XChangeProperty(display.dpy, s->supporting, X_ATOM(_NET_WM_PID),
 			XA_CARDINAL, 32, PropModeReplace,
 			(unsigned char *)&pid, 1);
+
 	ewmh_set_screen_workarea(s);
 
 }

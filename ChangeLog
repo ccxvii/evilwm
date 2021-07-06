@@ -1,5 +1,7 @@
 Version 1.3.0, unreleased
 
+  * Add EWMH 1.5 _NET_WM_STATE_FOCUSED support.
+
 Version 1.2.1, Mon Jul  5 2021
 
   * Fix QWERTZ_KEYMAP build option [Sime Ramov]

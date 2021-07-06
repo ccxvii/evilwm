@@ -128,22 +128,6 @@ void ewmh_withdraw_client(struct client *c) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// Updates _NET_ACTIVE_WINDOW on _all_ screens, assuming 'c' is now active.
-
-void ewmh_set_net_active_window(struct client *c) {
-	for (int i = 0; i < display.nscreens; i++) {
-		Window w;
-		if (c && i == c->screen->screen) {
-			w = c->window;
-		} else {
-			w = None;
-		}
-		XChangeProperty(display.dpy, display.screens[i].root, X_ATOM(_NET_ACTIVE_WINDOW),
-				XA_WINDOW, 32, PropModeReplace,
-				(unsigned char *)&w, 1);
-	}
-}
-
 // Update _NET_WM_DESKTOP to reflect virtual desktop of client (including
 // fixed, 0xffffffff).
 
@@ -174,10 +158,11 @@ unsigned ewmh_get_net_wm_window_type(Window w) {
 	return type;
 }
 
-// Update _NET_WM_STATE_* properties on a window
+// Update _NET_WM_STATE_* properties on a window.  Also updates
+// _NET_ACTIVE_WINDOW on the client's screen if necessary.
 
 void ewmh_set_net_wm_state(struct client *c) {
-	Atom state[3];
+	Atom state[4];
 	int i = 0;
 	if (c->oldh)
 		state[i++] = X_ATOM(_NET_WM_STATE_MAXIMIZED_VERT);
@@ -185,6 +170,22 @@ void ewmh_set_net_wm_state(struct client *c) {
 		state[i++] = X_ATOM(_NET_WM_STATE_MAXIMIZED_HORZ);
 	if (c->oldh && c->oldw)
 		state[i++] = X_ATOM(_NET_WM_STATE_FULLSCREEN);
+	if (c == current) {
+		state[i++] = X_ATOM(_NET_WM_STATE_FOCUSED);
+		if (c->screen->active != c->window) {
+			XChangeProperty(display.dpy, c->screen->root,
+			                X_ATOM(_NET_ACTIVE_WINDOW),
+			                XA_WINDOW, 32, PropModeReplace,
+			                (unsigned char *)&c->window, 1);
+			c->screen->active = c->window;
+		}
+	} else if (c->screen->active == c->window) {
+		Window w = None;
+		XChangeProperty(display.dpy, c->screen->root, X_ATOM(_NET_ACTIVE_WINDOW),
+		                XA_WINDOW, 32, PropModeReplace,
+		                (unsigned char *)&w, 1);
+		c->screen->active = None;
+	}
 	XChangeProperty(display.dpy, c->window, X_ATOM(_NET_WM_STATE),
 			XA_ATOM, 32, PropModeReplace,
 			(unsigned char *)&state, i);

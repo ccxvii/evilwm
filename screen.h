@@ -22,6 +22,7 @@ struct screen {
 	char *display;       // DISPLAY string, eg ":0.0"
 	Window root;         // root window of screen
 	Window supporting;   // dummy window for EWMH
+	Window active;       // current _NET_ACTIVE_WINDOW value for root
 	GC invert_gc;        // used to draw outlines
 	XColor fg, bg, fc;   // allocated colours; active, inactive, fixed
 	unsigned vdesk;      // current vdesk for screen
