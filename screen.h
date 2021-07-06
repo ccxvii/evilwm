@@ -16,6 +16,14 @@
 
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#ifdef RANDR
+#include <X11/extensions/Xrandr.h>
+#endif
+
+struct monitor {
+	int x, y;
+	int width, height;
+};
 
 struct screen {
 	int screen;          // screen index for display
@@ -28,11 +36,18 @@ struct screen {
 	unsigned vdesk;      // current vdesk for screen
 	unsigned old_vdesk;  // previous vdesk, so user may toggle back to it
 	int docks_visible;   // docks can be toggled visible/hidden
+
+	// from randr, or just one entry with screen dimensions if no randr
+	int nmonitors;       // number of monitors
+	struct monitor *monitors;
 };
 
 // Setup and shutdown.
 void screen_init(struct screen *s);
 void screen_deinit(struct screen *s);
+
+// Probe monitors (Randr)
+void screen_probe_monitors(struct screen *s);
 
 // Switch vdesks; hides & shows clients accordingly.
 void switch_vdesk(struct screen *s, unsigned v);

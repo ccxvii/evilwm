@@ -60,9 +60,10 @@ static int absmin(int a, int b) {
 // or to the screen border.
 
 static void snap_client(struct client *c) {
+	struct monitor *monitor = client_monitor(c);
 	int dx, dy;
-	int dpy_width = DisplayWidth(display.dpy, c->screen->screen);
-	int dpy_height = DisplayHeight(display.dpy, c->screen->screen);
+	int dpy_width = monitor->width;
+	int dpy_height = monitor->height;
 	struct list *iter;
 	struct client *ci;
 
@@ -95,17 +96,17 @@ static void snap_client(struct client *c) {
 
 	// Snap to screen border
 
-	if (abs(c->x - c->border) < option.snap) c->x = c->border;
-	if (abs(c->y - c->border) < option.snap) c->y = c->border;
-	if (abs(c->x + c->width + c->border - dpy_width) < option.snap)
-		c->x = dpy_width - c->width - c->border;
-	if (abs(c->y + c->height + c->border - dpy_height) < option.snap)
-		c->y = dpy_height - c->height - c->border;
+	if (abs(c->x - c->border - monitor->x) < option.snap) c->x = monitor->x + c->border;
+	if (abs(c->y - c->border - monitor->y) < option.snap) c->y = monitor->y + c->border;
+	if (abs(c->x + c->width + c->border - monitor->x - dpy_width) < option.snap)
+		c->x = monitor->x + dpy_width - c->width - c->border;
+	if (abs(c->y + c->height + c->border - monitor->y - dpy_height) < option.snap)
+		c->y = monitor->y + dpy_height - c->height - c->border;
 
-	if (abs(c->x) == c->border && c->width == dpy_width)
-		c->x = 0;
-	if (abs(c->y) == c->border && c->height == dpy_height)
-		c->y = 0;
+	if (abs(c->x) == monitor->x + c->border && c->width == dpy_width)
+		c->x = monitor->x;
+	if (abs(c->y) == monitor->y + c->border && c->height == dpy_height)
+		c->y = monitor->y;
 }
 
 // During a sweep (resize interaction), recalculate new dimensions for a window
@@ -363,6 +364,7 @@ void client_moveresizeraise(struct client *c) {
 // properties so that they persist across window manager restarts.
 
 void client_maximise(struct client *c, int action, int hv) {
+	struct monitor *monitor = client_monitor(c);
 	if (hv & MAXIMISE_HORZ) {
 		if (c->oldw) {
 			if (action == NET_WM_STATE_REMOVE || action == NET_WM_STATE_TOGGLE) {
@@ -376,8 +378,8 @@ void client_maximise(struct client *c, int action, int hv) {
 				unsigned long props[2];
 				c->oldx = c->x;
 				c->oldw = c->width;
-				c->x = 0;
-				c->width = DisplayWidth(display.dpy, c->screen->screen);
+				c->x = monitor->x;
+				c->width = monitor->width;
 				props[0] = c->oldx;
 				props[1] = c->oldw;
 				XChangeProperty(display.dpy, c->window, X_ATOM(_EVILWM_UNMAXIMISED_HORZ),
@@ -399,8 +401,8 @@ void client_maximise(struct client *c, int action, int hv) {
 				unsigned long props[2];
 				c->oldy = c->y;
 				c->oldh = c->height;
-				c->y = 0;
-				c->height = DisplayHeight(display.dpy, c->screen->screen);
+				c->y = monitor->y;
+				c->height = monitor->height;
 				props[0] = c->oldy;
 				props[1] = c->oldh;
 				XChangeProperty(display.dpy, c->window, X_ATOM(_EVILWM_UNMAXIMISED_VERT),

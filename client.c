@@ -129,6 +129,29 @@ struct client *find_client(Window w) {
 	return NULL;
 }
 
+// Determine which monitor to consider "current" for the client.
+struct monitor *client_monitor(struct client *c) {
+	int midx = c->x + c->width/2;
+	int midy = c->y + c->height/2;
+	_Bool was_inside = 0;
+	struct monitor *best = NULL;
+	for (int i = 0; i < c->screen->nmonitors; i++) {
+		struct monitor *m = &c->screen->monitors[i];
+		_Bool is_inside = (midx >= m->x && midx < (m->x + m->width)) &&
+		                  (midy >= m->y && midy < (m->y + m->height));
+		if (is_inside && !was_inside) {
+			best = m;
+			was_inside = 1;
+			continue;
+		}
+		// TODO: more heuristics to try and be intelligent about
+		// overlapping regions
+	}
+	if (best)
+		return best;
+	return &c->screen->monitors[0];
+}
+
 // "Hides" the client (unmaps and flags it as iconified).  Used to simulate
 // virtual desktops by hiding all clients not on the current vdesk.
 

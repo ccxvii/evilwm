@@ -15,6 +15,7 @@
 
 struct list;
 struct screen;
+struct monitor;
 
 // Maximise flags
 #define MAXIMISE_HORZ   (1<<0)
@@ -91,6 +92,7 @@ void client_select_next(void);
 // client.c: various other client functions
 
 struct client *find_client(Window w);
+struct monitor *client_monitor(struct client *c);
 void client_hide(struct client *c);
 void client_show(struct client *c);
 void client_raise(struct client *c);

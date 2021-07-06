@@ -107,6 +107,7 @@ static void handle_key_event(XKeyEvent *e) {
 	struct client *c = current;
 	if (c == NULL) return;
 
+	struct monitor *monitor = client_monitor(c);
 	int width_inc = (c->width_inc > 1) ? c->width_inc : 16;
 	int height_inc = (c->height_inc > 1) ? c->height_inc : 16;
 
@@ -144,24 +145,20 @@ static void handle_key_event(XKeyEvent *e) {
 			}
 			goto move_client;
 		case KEY_TOPLEFT:
-			c->x = c->border;
-			c->y = c->border;
+			c->x = monitor->x + c->border;
+			c->y = monitor->y + c->border;
 			goto move_client;
 		case KEY_TOPRIGHT:
-			c->x = DisplayWidth(display.dpy, c->screen->screen)
-				- c->width-c->border;
-			c->y = c->border;
+			c->x = monitor->x + monitor->width - c->width-c->border;
+			c->y = monitor->y + c->border;
 			goto move_client;
 		case KEY_BOTTOMLEFT:
-			c->x = c->border;
-			c->y = DisplayHeight(display.dpy, c->screen->screen)
-				- c->height-c->border;
+			c->x = monitor->x + c->border;
+			c->y = monitor->y + monitor->height - c->height-c->border;
 			goto move_client;
 		case KEY_BOTTOMRIGHT:
-			c->x = DisplayWidth(display.dpy, c->screen->screen)
-				- c->width-c->border;
-			c->y = DisplayHeight(display.dpy, c->screen->screen)
-				- c->height-c->border;
+			c->x = monitor->x + monitor->width - c->width-c->border;
+			c->y = monitor->y + monitor->height - c->height-c->border;
 			goto move_client;
 		case KEY_KILL:
 			send_wm_delete(c, e->state & altmask);
@@ -449,6 +446,7 @@ static void handle_randr_event(XRRScreenChangeNotifyEvent *e) {
 	struct screen *s = find_screen(e->root);
 	int oldw = DisplayWidth(display.dpy, s->screen);
 	int oldh = DisplayHeight(display.dpy, s->screen);
+	screen_probe_monitors(s);
 	XRRUpdateConfiguration((XEvent*)e);
 	fix_screen_after_resize(s, oldw, oldh);
 	ewmh_set_screen_workarea(s);

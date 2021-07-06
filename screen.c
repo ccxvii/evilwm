@@ -62,10 +62,12 @@ void screen_init(struct screen *s) {
 
 	s->root = RootWindow(display.dpy, i);
 #ifdef RANDR
-	if (display.have_randr) {
+	s->monitors = NULL;
+        if (display.have_randr) {
 		XRRSelectInput(display.dpy, s->root, RRScreenChangeNotifyMask);
 	}
 #endif
+	screen_probe_monitors(s);
 
 	// Default to first virtual desktop.  TODO: consider checking the
 	// _NET_WM_DESKTOP property of the window with focus when we start to
@@ -216,6 +218,51 @@ void screen_deinit(struct screen *s) {
 	XDeleteProperty(display.dpy, s->root, X_ATOM(_NET_WORKAREA));
 	XDeleteProperty(display.dpy, s->root, X_ATOM(_NET_SUPPORTING_WM_CHECK));
 	XDestroyWindow(display.dpy, s->supporting);
+}
+
+// Get a list of monitors for the screen.  If Randr is unavailable (or too
+// early to support querying monitors), assume a single monitor covering the
+// whole screen.
+
+void screen_probe_monitors(struct screen *s) {
+#if defined(RANDR) && (RANDR_MAJOR == 1) && (RANDR_MINOR >= 5)
+        if (display.have_randr) {
+		int nmonitors;
+		XRRMonitorInfo *monitors;
+		// Populate list of active monitors
+		LOG_XENTER("XRRGetMonitors(screen=%d)", s->screen);
+		monitors = XRRGetMonitors(display.dpy, s->root, True, &nmonitors);
+		if (monitors) {
+			if (nmonitors != s->nmonitors) {
+				// allocating in multiple of 4 should stop us
+				// having to reallocate at all in the most
+				// common uses
+				int n = (nmonitors | 3) + 1;
+				s->monitors = realloc(s->monitors, n * sizeof(struct monitor));
+			}
+			for (int i = 0; i < nmonitors; i++) {
+				LOG_XDEBUG("monitor %d: %dx%d+%d+%d\n", i, monitors[i].width, monitors[i].height, monitors[i].x, monitors[i].y);
+				s->monitors[i].width = monitors[i].width;
+				s->monitors[i].height = monitors[i].height;
+				s->monitors[i].x = monitors[i].x;
+				s->monitors[i].y = monitors[i].y;
+			}
+			s->nmonitors = nmonitors;
+			LOG_XLEAVE();
+			XRRFreeMonitors(monitors);
+			return;
+		}
+	}
+#endif
+
+	s->nmonitors = 1;
+	if (!s->monitors) {
+		s->monitors = xmalloc(sizeof(struct monitor));
+	}
+	s->monitors[0].width = DisplayWidth(display.dpy, s->screen);
+	s->monitors[0].height = DisplayHeight(display.dpy, s->screen);
+	s->monitors[0].x = 0;
+	s->monitors[0].y = 0;
 }
 
 // Switch virtual desktop.  Hides clients on different vdesks, shows clients on
