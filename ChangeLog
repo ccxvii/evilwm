@@ -1,3 +1,7 @@
+Version 1.2.1, Mon Jul  5 2021
+
+  * Fix QWERTZ_KEYMAP build option [Sime Ramov]
+
 Version 1.2.0, Mon Jul  5 2021
 
   * Code reorder.  Better code separation and many more/better comments.
