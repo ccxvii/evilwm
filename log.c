@@ -14,15 +14,11 @@
 
 #include "log.h"
 
-#ifdef DEBUG
-
+#if defined(DEBUG) || defined(XDEBUG)
 int log_indent = 0;
-
 #endif
 
 #ifdef XDEBUG
-
-
 
 static const char *gravity_string(int gravity) {
 	const char *gravities[12] = {

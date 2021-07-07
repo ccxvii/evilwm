@@ -4,12 +4,6 @@
 
 // This file is not generated, it is used to sanity check compile options.
 
-// XDEBUG depends on DEBUG
-
-#if defined(XDEBUG) && !defined(DEBUG)
-# define DEBUG
-#endif
-
 // INFOBANNER_MOVERESIZE depends on INFOBANNER
 
 #if defined(INFOBANNER_MOVERESIZE) && !defined(INFOBANNER)
