@@ -24,19 +24,8 @@ Although the current methods work well enough, it would be nice to not have to
 grab the X server so often.  e.g., when adding or removing a client, maintain a
 set of windows that the error handler should treat differently.
 
-
-## Difficult: multi-monitor support
-
-Explicit multi-monitor behaviours based on RandR information.  David Flynn had
-some patches to do similar for Xinerama, but the modern approach seems to be to
-use RandR.
-
-It probably makes sense that switching vdesk should only affect the current
-monitor.
-
-If a monitor is removed, clients should be moved to one that is still visible.
-How to choose?  Maybe determine which still-visible monitor was "closest"?
-
-It would be nice if clients relocated in that way returned to the monitor they
-came from if it is reattached.  Some sort of property to record that
-information that is removed on other user interaction?
+RandR-based multi-monitor support has now been implemented, but it would be
+nice if, when a client is moved due to removing a monitor, it could be moved
+back to its original position if the _same_ monitor is reattached.  Whether a
+monitor is the "same" is probably just down to whether it occupies the same
+geometry on the screen.

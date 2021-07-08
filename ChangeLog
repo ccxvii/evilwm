@@ -1,6 +1,7 @@
 Version 1.3.0, unreleased
 
   * Add EWMH 1.5 _NET_WM_STATE_FOCUSED support.
+  * Add basic multi-monitor support when Randr >= 1.5 available.
 
 Version 1.2.1, Mon Jul  5 2021
 
