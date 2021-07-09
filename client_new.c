@@ -107,7 +107,7 @@ void client_manage_new(Window w, struct screen *s) {
 
 	XUngrabServer(display.dpy);
 
-	c->border = option.bw;
+	c->normal_border = option.bw;
 
 	update_window_type_flags(c, window_type);
 	init_geometry(c);
@@ -229,7 +229,7 @@ static void init_geometry(struct client *c) {
 				&& (mprop->flags & MWM_HINTS_DECORATIONS)
 				&& !(mprop->decorations & MWM_DECOR_ALL)
 				&& !(mprop->decorations & MWM_DECOR_BORDER)) {
-			c->border = 0;
+			c->normal_border = 0;
 		}
 		XFree(mprop);
 	}
@@ -285,6 +285,8 @@ static void init_geometry(struct client *c) {
 		}
 		XFree(eprop);
 	}
+
+	c->border = (c->oldw && c->oldh) ? 0 : c->normal_border;
 
 	// Update some client info from the WM_NORMAL_HINTS property.  The
 	// flags returned will indicate whether certain values were user- or

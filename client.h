@@ -43,7 +43,8 @@ struct client {
 
 	// Geometry
 	int x, y, width, height;
-	int border;
+	int normal_border;  // normal border when unmaximised
+	int border;  // current border
 
 	// Old geometry while maximising
 	int oldx, oldy, oldw, oldh;

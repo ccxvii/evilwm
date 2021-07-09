@@ -412,6 +412,19 @@ void client_maximise(struct client *c, int action, int hv) {
 			}
 		}
 	}
+	if (c->oldw && c->oldh) {
+		// maximised - remove border
+		if (c->border) {
+			c->border = 0;
+			XSetWindowBorderWidth(display.dpy, c->parent, 0);
+		}
+	} else {
+		// not maximised - add border
+		if (!c->border && c->normal_border) {
+			c->border = c->normal_border;
+			XSetWindowBorderWidth(display.dpy, c->parent, c->border);
+		}
+	}
 	ewmh_set_net_wm_state(c);
 	client_moveresizeraise(c);
 	discard_enter_events(c);
