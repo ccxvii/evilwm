@@ -384,19 +384,23 @@ void fix_screen_after_resize(struct screen *s, int oldw, int oldh) {
 		if (c->oldw) {
 			// horiz maximised: update width, update old x pos
 			c->width = neww;
-			c->oldx = scale_pos(neww, oldw, c->oldx, c->oldw + c->border);
+			if (c->oldx >= neww)
+				c->oldx = scale_pos(neww, oldw, c->oldx, c->oldw + c->border);
 		} else {
 			// horiz normal: update x pos
-			c->x = scale_pos(neww, oldw, c->x, c->width + c->border);
+			if (c->x >= neww)
+				c->x = scale_pos(neww, oldw, c->x, c->width + c->border);
 		}
 
 		if (c->oldh) {
 			// vert maximised: update height, update old y pos
 			c->height = newh;
-			c->oldy = scale_pos(newh, oldh, c->oldy, c->oldh + c->border);
+			if (c->oldy >= newh)
+				c->oldy = scale_pos(newh, oldh, c->oldy, c->oldh + c->border);
 		} else {
 			// vert normal: update y pos
-			c->y = scale_pos(newh, oldh, c->y, c->height + c->border);
+			if (c->y >= newh)
+				c->y = scale_pos(newh, oldh, c->y, c->height + c->border);
 		}
 		client_moveresize(c);
 	}
