@@ -59,8 +59,7 @@ static int absmin(int a, int b) {
 // Snap a client to the edges of other clients (if on same screen, and visible)
 // or to the screen border.
 
-static void snap_client(struct client *c) {
-	struct monitor *monitor = client_monitor(c);
+static void snap_client(struct client *c, struct monitor *monitor) {
 	int dx, dy;
 	int dpy_width = monitor->width;
 	int dpy_height = monitor->height;
@@ -221,6 +220,8 @@ void client_move_drag(struct client *c, unsigned button) {
 	int old_cy = c->y;
 	get_pointer_root_xy(c->screen->root, &x1, &y1);
 
+	struct monitor *monitor = client_monitor(c, NULL);
+
 #ifdef INFOBANNER_MOVERESIZE
 	create_info_window(c);
 #endif
@@ -243,7 +244,7 @@ void client_move_drag(struct client *c, unsigned button) {
 				c->x = old_cx + (ev.xmotion.x - x1);
 				c->y = old_cy + (ev.xmotion.y - y1);
 				if (option.snap && !(ev.xmotion.state & altmask))
-					snap_client(c);
+					snap_client(c, monitor);
 
 #ifdef INFOBANNER_MOVERESIZE
 				update_info_window(c);
@@ -364,7 +365,7 @@ void client_moveresizeraise(struct client *c) {
 // properties so that they persist across window manager restarts.
 
 void client_maximise(struct client *c, int action, int hv) {
-	struct monitor *monitor = client_monitor(c);
+	struct monitor *monitor = client_monitor(c, NULL);
 	if (hv & MAXIMISE_HORZ) {
 		if (c->oldw) {
 			if (action == NET_WM_STATE_REMOVE || action == NET_WM_STATE_TOGGLE) {

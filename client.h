@@ -51,6 +51,9 @@ struct client {
 	// Old border width - only used to restore when quitting
 	int old_border;
 
+	// Old monitor offset as proportion of monitor geometry
+	double mon_offx, mon_offy;
+
 	// Flag set when we need to remove client from management
 	int remove;
 
@@ -92,7 +95,7 @@ void client_select_next(void);
 // client.c: various other client functions
 
 struct client *find_client(Window w);
-struct monitor *client_monitor(struct client *c);
+struct monitor *client_monitor(struct client *c, Bool *intersects);
 void client_hide(struct client *c);
 void client_show(struct client *c);
 void client_raise(struct client *c);

@@ -23,6 +23,7 @@
 struct monitor {
 	int x, y;
 	int width, height;
+	int area;
 };
 
 struct screen {
@@ -55,9 +56,12 @@ void switch_vdesk(struct screen *s, unsigned v);
 // Show or hide docks.
 void set_docks_visible(struct screen *s, int is_visible);
 
+// Record old monitor size in each client before resize.
+void scan_clients_before_resize(struct screen *s);
+
 // Xrandr allows a screen to resize; this function adjusts the position of
 // clients so they remain visible.
-void fix_screen_after_resize(struct screen *s, int oldw, int oldh);
+void fix_screen_after_resize(struct screen *s);
 
 // Find screen corresponding to specified root window.
 struct screen *find_screen(Window root);

@@ -22,6 +22,10 @@ desktopfilesdir = $(datarootdir)/applications
 ############################################################################
 # Features
 
+# Uncomment to enable use of sqrt() function in monitor distance calculations.
+OPT_CPPFLAGS += -DHAVE_MATH_H
+OPT_LDLIBS += -lm
+
 # Uncomment to enable info banner on holding Ctrl+Alt+I.
 OPT_CPPFLAGS += -DINFOBANNER
 

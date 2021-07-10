@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef HAVE_MATH_H
+#include <math.h>
+#endif
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -129,27 +133,87 @@ struct client *find_client(Window w) {
 	return NULL;
 }
 
-// Determine which monitor to consider "current" for the client.
-struct monitor *client_monitor(struct client *c) {
-	int midx = c->x + c->width/2;
-	int midy = c->y + c->height/2;
-	_Bool was_inside = 0;
+static int imin(int a, int b) {
+	return (a < b) ? a : b;
+}
+
+static int imax(int a, int b) {
+	return (a > b) ? a : b;
+}
+
+// Determine which monitor to consider "closest" for the client.  This is
+// either largest intersection ratio or, if no intersection with any monitor
+// (ie not visible), closest mid points.
+//
+// Largest ratio should mean that if one monitor is a subset of another, a
+// window within it will be considered to be "closest" to the smaller monitor
+// for the purpose of maximising, etc.
+//
+// 'intersects' is set to represent whether client intersects with any monitor.
+
+struct monitor *client_monitor(struct client *c, Bool *intersects) {
+	int cx1 = c->x - c->border;
+	int cy1 = c->y - c->border;
+	int cx2 = cx1 + c->width + c->border*2;
+	int cy2 = cy1 + c->height + c->border*2;
+	int cmidx = (cx1 + cx2)/2;
+	int cmidy = (cy1 + cy2)/2;
+
 	struct monitor *best = NULL;
+	Bool have_intersection = 0;
+	double best_area_ratio = 0.0;
+	double best_distance = 0.0;;
+
 	for (int i = 0; i < c->screen->nmonitors; i++) {
 		struct monitor *m = &c->screen->monitors[i];
-		_Bool is_inside = (midx >= m->x && midx < (m->x + m->width)) &&
-		                  (midy >= m->y && midy < (m->y + m->height));
-		if (is_inside && !was_inside) {
-			best = m;
-			was_inside = 1;
-			continue;
+		int mx2 = m->x + m->width;
+		int my2 = m->y + m->height;
+
+		int iw = imax(0, imin(mx2, cx2) - imax(m->x, cx1));
+		int ih = imax(0, imin(my2, cy2) - imax(m->y, cy1));
+		int iarea = iw * ih;
+
+		// XXX if you're building on a platform without any floating
+		// point, you could consider simply returning the first monitor
+		// for which an intersection is found.
+
+		if (iarea > 0) {
+			// Found an intersection.  Higher ratio wins.
+			double iarea_ratio = (double)iarea / (double)m->area;
+			if (!have_intersection || iarea_ratio > best_area_ratio) {
+				have_intersection = 1;
+				best_area_ratio = iarea_ratio;
+				best = m;
+				continue;
+			}
 		}
-		// TODO: more heuristics to try and be intelligent about
-		// overlapping regions
+
+		// Otherwise, any previous intersection trumps distance.
+		if (have_intersection)
+			continue;
+
+#ifdef HAVE_MATH_H
+		// No intersections yet, calculate distance between midpoints.
+		int mmidx = (m->x + mx2)/2;
+		int mmidy = (m->y + my2)/2;
+		int dx = abs(cmidx - mmidx);
+		int dy = abs(cmidy - mmidy);
+		double d = sqrt(dx*dx + dy*dy);
+
+		if (!best || d < best_distance) {
+			best_distance = d;
+			best = m;
+		}
+#endif
 	}
-	if (best)
-		return best;
-	return &c->screen->monitors[0];
+
+	if (!best) {
+		best = &c->screen->monitors[0];
+	}
+	if (intersects) {
+		*intersects = have_intersection;
+	}
+	return best;
 }
 
 // "Hides" the client (unmaps and flags it as iconified).  Used to simulate

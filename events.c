@@ -107,7 +107,7 @@ static void handle_key_event(XKeyEvent *e) {
 	struct client *c = current;
 	if (c == NULL) return;
 
-	struct monitor *monitor = client_monitor(c);
+	struct monitor *monitor = client_monitor(c, NULL);
 	int width_inc = (c->width_inc > 1) ? c->width_inc : 16;
 	int height_inc = (c->height_inc > 1) ? c->height_inc : 16;
 
@@ -444,11 +444,16 @@ static void handle_shape_event(XShapeEvent *e) {
 #ifdef RANDR
 static void handle_randr_event(XRRScreenChangeNotifyEvent *e) {
 	struct screen *s = find_screen(e->root);
-	int oldw = DisplayWidth(display.dpy, s->screen);
-	int oldh = DisplayHeight(display.dpy, s->screen);
-	screen_probe_monitors(s);
+	// Record geometries of clients relative to monitor
+	scan_clients_before_resize(s);
+	// Update Xlib's idea of screen size
 	XRRUpdateConfiguration((XEvent*)e);
-	fix_screen_after_resize(s, oldw, oldh);
+	// Scan new monitor list
+	screen_probe_monitors(s);
+	// Fix any clients that are now not visible on any monitor.  Also
+	// adjusts maximised geometries where appropriate.
+	fix_screen_after_resize(s);
+	// Update various EWMH properties that reflect screen geometry
 	ewmh_set_screen_workarea(s);
 }
 #endif

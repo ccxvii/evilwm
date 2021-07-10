@@ -242,10 +242,11 @@ void screen_probe_monitors(struct screen *s) {
 			}
 			for (int i = 0; i < nmonitors; i++) {
 				LOG_XDEBUG("monitor %d: %dx%d+%d+%d\n", i, monitors[i].width, monitors[i].height, monitors[i].x, monitors[i].y);
-				s->monitors[i].width = monitors[i].width;
-				s->monitors[i].height = monitors[i].height;
 				s->monitors[i].x = monitors[i].x;
 				s->monitors[i].y = monitors[i].y;
+				s->monitors[i].width = monitors[i].width;
+				s->monitors[i].height = monitors[i].height;
+				s->monitors[i].area = monitors[i].width * monitors[i].height;
 			}
 			s->nmonitors = nmonitors;
 			LOG_XLEAVE();
@@ -259,10 +260,11 @@ void screen_probe_monitors(struct screen *s) {
 	if (!s->monitors) {
 		s->monitors = xmalloc(sizeof(struct monitor));
 	}
-	s->monitors[0].width = DisplayWidth(display.dpy, s->screen);
-	s->monitors[0].height = DisplayHeight(display.dpy, s->screen);
 	s->monitors[0].x = 0;
 	s->monitors[0].y = 0;
+	s->monitors[0].width = DisplayWidth(display.dpy, s->screen);
+	s->monitors[0].height = DisplayHeight(display.dpy, s->screen);
+	s->monitors[0].area = s->monitors[0].width * s->monitors[0].height;
 }
 
 // Switch virtual desktop.  Hides clients on different vdesks, shows clients on
@@ -350,61 +352,81 @@ void set_docks_visible(struct screen *s, int is_visible) {
 	LOG_LEAVE();
 }
 
-// Scale a coordinate and size between old screen size and new.
+#ifdef RANDR
 
-static int scale_pos(int new_screen_size, int old_screen_size, int cli_pos, int cli_size) {
-	if (old_screen_size != cli_size && new_screen_size != cli_size) {
-		new_screen_size -= cli_size;
-		old_screen_size -= cli_size;
-	}
-	return new_screen_size * cli_pos / old_screen_size;
-}
-
-// If a screen has been resized, eg, due to xrandr, some windows have the
+// If a screen has been resized (due to RandR), some windows have the
 // possibility of:
 //
 //   a) not being visible
-//
 //   b) being vertically/horizontally maximised to the wrong extent
 //
-// Currently, i can't think of a good policy for doing this, but the minimal
-// modification is to fix (b), and ensure (a) is visible.  NB, maximised
-// windows will need their old* values updating according to (a).
+// Our approach is now to:
+//
+//   1) record client positions as proportions of offset into their current
+//      monitor
+//   2) apply screen geometry changes and rescan list of monitors
+//   3) move any client that no longer intersects a monitor to the same
+//      proportional position within its nearest monitor
+//   4) adjust geometry of maximised clients to any "new" monitor
 
-void fix_screen_after_resize(struct screen *s, int oldw, int oldh) {
-	int neww = DisplayWidth(display.dpy, s->screen);
-	int newh = DisplayHeight(display.dpy, s->screen);
+// Record old monitor offset for each client before resize.
 
+void scan_clients_before_resize(struct screen *s) {
 	for (struct list *iter = clients_tab_order; iter; iter = iter->next) {
 		struct client *c = iter->data;
 		// only handle clients on the screen being resized
 		if (c->screen != s)
 			continue;
 
+		struct monitor *m = client_monitor(c, NULL);
+
+		int mw = m->width;
+		int mh = m->height;
+		int cx = c->oldw ? c->oldx : c->x;
+		int cy = c->oldh ? c->oldy : c->y;
+
+		c->mon_offx = (double)(cx - m->x) / (double)mw;
+		c->mon_offy = (double)(cy - m->y) / (double)mh;
+	}
+}
+
+// Fix up maximised and non-intersecting clients after resize.
+
+void fix_screen_after_resize(struct screen *s) {
+	for (struct list *iter = clients_tab_order; iter; iter = iter->next) {
+		struct client *c = iter->data;
+		// only handle clients on the screen being resized
+		if (c->screen != s)
+			continue;
+		Bool intersects;
+		struct monitor *m = client_monitor(c, &intersects);
+
 		if (c->oldw) {
 			// horiz maximised: update width, update old x pos
-			c->width = neww;
-			if (c->oldx >= neww)
-				c->oldx = scale_pos(neww, oldw, c->oldx, c->oldw + c->border);
+			c->x = m->x - c->border;
+			c->width = m->width;
+			c->oldx = m->x + c->mon_offx * m->width;
 		} else {
 			// horiz normal: update x pos
-			if (c->x >= neww)
-				c->x = scale_pos(neww, oldw, c->x, c->width + c->border);
+			if (!intersects)
+				c->x = m->x + c->mon_offx * m->width;
 		}
 
 		if (c->oldh) {
 			// vert maximised: update height, update old y pos
-			c->height = newh;
-			if (c->oldy >= newh)
-				c->oldy = scale_pos(newh, oldh, c->oldy, c->oldh + c->border);
+			c->y = m->y - c->border;
+			c->height = m->height;
+			c->oldy = m->y + c->mon_offy * m->height;
 		} else {
 			// vert normal: update y pos
-			if (c->y >= newh)
-				c->y = scale_pos(newh, oldh, c->y, c->height + c->border);
+			if (!intersects)
+				c->y = m->y + c->mon_offy * m->height;
 		}
 		client_moveresize(c);
 	}
 }
+
+#endif
 
 // Find screen corresponding to specified root window.
 
