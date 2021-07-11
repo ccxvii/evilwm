@@ -27,6 +27,10 @@
 static Window *window_array = NULL;
 static Window *alloc_window_array(void);
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// Update various properties that reflect the screen geometry.
+
 void ewmh_set_screen_workarea(struct screen *s) {
 	unsigned long workarea[4] = {
 		0, 0,
