@@ -20,6 +20,7 @@ struct monitor;
 // Maximise flags
 #define MAXIMISE_HORZ   (1<<0)
 #define MAXIMISE_VERT   (1<<1)
+#define MAXIMISE_SCREEN (1<<2)  // maximise to screen, not monitor
 
 // Virtual desktop macros
 #define VDESK_NONE  (0xfffffffe)

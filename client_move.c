@@ -365,7 +365,22 @@ void client_moveresizeraise(struct client *c) {
 // properties so that they persist across window manager restarts.
 
 void client_maximise(struct client *c, int action, int hv) {
-	struct monitor *monitor = client_monitor(c, NULL);
+	int monitor_x, monitor_y;
+	int monitor_width, monitor_height;
+
+	// Maximising to monitor or screen?
+	if (hv & MAXIMISE_SCREEN) {
+		monitor_x = monitor_y = 0;
+		monitor_width = DisplayWidth(display.dpy, c->screen->screen);
+		monitor_height = DisplayHeight(display.dpy, c->screen->screen);
+	} else {
+		struct monitor *monitor = client_monitor(c, NULL);
+		monitor_x = monitor->x;
+		monitor_y = monitor->y;
+		monitor_width = monitor->width;
+		monitor_height = monitor->height;
+	}
+
 	if (hv & MAXIMISE_HORZ) {
 		if (c->oldw) {
 			if (action == NET_WM_STATE_REMOVE || action == NET_WM_STATE_TOGGLE) {
@@ -379,8 +394,8 @@ void client_maximise(struct client *c, int action, int hv) {
 				unsigned long props[2];
 				c->oldx = c->x;
 				c->oldw = c->width;
-				c->x = monitor->x;
-				c->width = monitor->width;
+				c->x = monitor_x;
+				c->width = monitor_width;
 				props[0] = c->oldx;
 				props[1] = c->oldw;
 				XChangeProperty(display.dpy, c->window, X_ATOM(_EVILWM_UNMAXIMISED_HORZ),
@@ -402,8 +417,8 @@ void client_maximise(struct client *c, int action, int hv) {
 				unsigned long props[2];
 				c->oldy = c->y;
 				c->oldh = c->height;
-				c->y = monitor->y;
-				c->height = monitor->height;
+				c->y = monitor_y;
+				c->height = monitor_height;
 				props[0] = c->oldy;
 				props[1] = c->oldh;
 				XChangeProperty(display.dpy, c->window, X_ATOM(_EVILWM_UNMAXIMISED_VERT),
