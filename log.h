@@ -31,15 +31,21 @@ extern int log_indent;
 // LOG_DEBUG_(...)  print continuation message (no indent)
 
 #ifdef DEBUG
+
 # define LOG_ENTER(...) do { LOG_INDENT(); log_indent++; fprintf(stderr, __VA_ARGS__); fprintf(stderr, " at %s:%d\n", __FILE__, __LINE__); } while (0)
 # define LOG_LEAVE() do { if (log_indent > 0) log_indent--; } while (0)
 # define LOG_DEBUG(...) do { LOG_INDENT(); fprintf(stderr, __VA_ARGS__); } while (0)
 # define LOG_DEBUG_(...) fprintf(stderr, __VA_ARGS__)
+
+const char *debug_atom_name(Atom a);
+
 #else
+
 # define LOG_ENTER(...)
 # define LOG_LEAVE(...)
 # define LOG_DEBUG(...)
 # define LOG_DEBUG_(...)
+
 #endif
 
 // X call debugging macros:

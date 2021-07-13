@@ -18,6 +18,18 @@
 int log_indent = 0;
 #endif
 
+#ifdef DEBUG
+
+const char *debug_atom_name(Atom a) {
+	static char buf[48];
+	char *atom_name = XGetAtomName(display.dpy, a);
+	strncpy(buf, atom_name, sizeof(buf));
+	buf[sizeof(buf)-1] = 0;
+	return buf;
+}
+
+#endif
+
 #ifdef XDEBUG
 
 static const char *gravity_string(int gravity) {

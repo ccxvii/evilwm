@@ -44,17 +44,6 @@ int wm_exit = 0;
 // Set by unhandled X errors and unmap requests.
 int need_client_tidy = 0;
 
-#ifdef DEBUG
-const char *debug_atom_name(Atom a);
-const char *debug_atom_name(Atom a) {
-	static char buf[48];
-	char *atom_name = XGetAtomName(display.dpy, a);
-	strncpy(buf, atom_name, sizeof(buf));
-	buf[sizeof(buf)-1] = 0;
-	return buf;
-}
-#endif
-
 // Process keyboard events.
 
 static void handle_key_event(XKeyEvent *e) {
