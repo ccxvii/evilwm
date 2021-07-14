@@ -72,7 +72,7 @@ static void set_app_fixed(void);
 static struct xconfig_option evilwm_options[] = {
 	{ XCONFIG_STRING,   "fn",           &option.font },
 	{ XCONFIG_STRING,   "display",      &option.display },
-	{ XCONFIG_INT,      "numvdesks",    &option.vdesks },
+	{ XCONFIG_UINT,     "numvdesks",    &option.vdesks },
 	{ XCONFIG_STRING,   "fg",           &option.fg },
 	{ XCONFIG_STRING,   "bg",           &option.bg },
 	{ XCONFIG_STRING,   "fc",           &option.fc },

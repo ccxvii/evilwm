@@ -21,6 +21,7 @@ enum xconfig_result {
 enum xconfig_option_type {
 	XCONFIG_BOOL,  // int
 	XCONFIG_INT,  // int
+	XCONFIG_UINT,  // unsigned
 	XCONFIG_STRING,  // char *
 	XCONFIG_STR_LIST,  // char **
 	XCONFIG_CALL_0,  // (void (*)(void)

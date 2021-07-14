@@ -91,6 +91,9 @@ static void set_option(struct xconfig_option *option, const char *arg) {
 		case XCONFIG_INT:
 			*(int *)option->dest = strtol(arg, NULL, 0);
 			break;
+		case XCONFIG_UINT:
+			*(unsigned *)option->dest = strtoul(arg, NULL, 0);
+			break;
 		case XCONFIG_STRING:
 			*(char **)option->dest = strdup(arg);
 			break;
