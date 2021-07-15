@@ -59,17 +59,15 @@ struct list *list_append(struct list *list, void *data) {
 
 // Delete list element containing data
 struct list *list_delete(struct list *list, void *data) {
-	struct list **elemp;
 	if (!data)
 		return list;
-	for (elemp = &list; *elemp; elemp = &(*elemp)->next) {
-		if ((*elemp)->data == data)
+	for (struct list **elemp = &list; *elemp; elemp = &(*elemp)->next) {
+		if ((*elemp)->data == data) {
+			struct list *elem = *elemp;
+			*elemp = elem->next;
+			free(elem);
 			break;
-	}
-	if (*elemp) {
-		struct list *elem = *elemp;
-		*elemp = elem->next;
-		free(elem);
+		}
 	}
 	return list;
 }
