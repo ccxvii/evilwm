@@ -62,6 +62,7 @@ void screen_init(struct screen *s) {
 
 	s->root = RootWindow(display.dpy, i);
 #ifdef RANDR
+	s->nmonitors = 0;
 	s->monitors = NULL;
         if (display.have_randr) {
 		XRRSelectInput(display.dpy, s->root, RRScreenChangeNotifyMask);
@@ -218,6 +219,7 @@ void screen_deinit(struct screen *s) {
 	XDeleteProperty(display.dpy, s->root, X_ATOM(_NET_WORKAREA));
 	XDeleteProperty(display.dpy, s->root, X_ATOM(_NET_SUPPORTING_WM_CHECK));
 	XDestroyWindow(display.dpy, s->supporting);
+	free(s->monitors);
 }
 
 // Get a list of monitors for the screen.  If Randr is unavailable (or too

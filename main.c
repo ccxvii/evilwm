@@ -119,6 +119,14 @@ int main(int argc, char *argv[]) {
 	struct sigaction act;
 	int argn = 1, ret;
 
+	act.sa_handler = handle_signal;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	sigaction(SIGTERM, &act, NULL);
+	sigaction(SIGINT, &act, NULL);
+	sigaction(SIGHUP, &act, NULL);
+
+	// Read configuration file
 	const char *home = getenv("HOME");
 	if (home) {
 		char *conffile = xmalloc(strlen(home) + sizeof(CONFIG_FILE) + 2);
@@ -128,17 +136,18 @@ int main(int argc, char *argv[]) {
 		free(conffile);
 	}
 
+	// Parse CLI options
 	ret = xconfig_parse_cli(evilwm_options, argc, argv, &argn);
 	if (ret == XCONFIG_MISSING_ARG) {
 		fprintf(stderr, "%s: missing argument to `%s'\n", argv[0], argv[argn]);
 		exit(1);
 	} else if (ret == XCONFIG_BAD_OPTION) {
 		if (0 == strcmp(argv[argn], "-h")
-				|| 0 == strcmp(argv[argn], "--help")) {
+		    || 0 == strcmp(argv[argn], "--help")) {
 			helptext();
 			exit(0);
 		} else if (0 == strcmp(argv[argn], "-V")
-				|| 0 == strcmp(argv[argn], "--version")) {
+			   || 0 == strcmp(argv[argn], "--version")) {
 			LOG_INFO("evilwm version " VERSION "\n");
 			exit(0);
 		} else {
@@ -147,21 +156,20 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if (opt_grabmask1) grabmask1 = parse_modifiers(opt_grabmask1);
-	if (opt_grabmask2) grabmask2 = parse_modifiers(opt_grabmask2);
-	if (opt_altmask) altmask = parse_modifiers(opt_altmask);
+	if (opt_grabmask1)
+		grabmask1 = parse_modifiers(opt_grabmask1);
+	if (opt_grabmask2)
+		grabmask2 = parse_modifiers(opt_grabmask2);
+	if (opt_altmask)
+		altmask = parse_modifiers(opt_altmask);
 
-	act.sa_handler = handle_signal;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	sigaction(SIGTERM, &act, NULL);
-	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGHUP, &act, NULL);
-
-	// Open display.  Manages all eligible clients across all screens.
-	display_open();
+	if (!display.dpy) {
+		// Open display.  Manages all eligible clients across all screens.
+		display_open();
+	}
 
 	// Run event look until something signals to quit.
+	wm_exit = 0;
 	event_main_loop();
 
 	// Close display.  This will cleanly unmanage all windows.

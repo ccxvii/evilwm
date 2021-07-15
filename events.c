@@ -38,7 +38,7 @@
 #include "util.h"
 
 // Event loop will run until this flag is set
-int wm_exit = 0;
+int wm_exit;
 
 // Flags that the client list should be scanned and marked clients removed.
 // Set by unhandled X errors and unmap requests.

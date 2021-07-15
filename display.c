@@ -37,7 +37,7 @@
 #include "xalloc.h"
 
 // evilwm only supports one display at a time; this variable is global:
-struct display display;
+struct display display = { 0 };
 
 // List of atom names.  Reflect any changes here in the enum in display.h.
 static const char *atom_list[] = {
@@ -192,7 +192,8 @@ void display_close(void) {
 
 	XSetInputFocus(display.dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 
-	if (display.font) XFreeFont(display.dpy, display.font);
+	if (display.font)
+		XFreeFont(display.dpy, display.font);
 
 	for (int i = 0; i < display.nscreens; i++) {
 		screen_deinit(&display.screens[i]);
