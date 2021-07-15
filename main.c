@@ -27,14 +27,7 @@
 
 #define CONFIG_FILE ".evilwmrc"
 
-static const char *const def_term[] = { DEF_TERM, NULL };
-
 struct options option = {
-	.display = "",
-	.font = DEF_FONT,
-	.fg = DEF_FG,
-	.bg = DEF_BG,
-	.fc = DEF_FC,
 	.bw = DEF_BW,
 
 #ifdef VWM
@@ -48,8 +41,6 @@ struct options option = {
 #ifdef SOLIDDRAG
 	.no_solid_drag = 0,
 #endif
-
-	.term = (char **)def_term,
 };
 
 static char *opt_grabmask1 = NULL;
@@ -70,31 +61,31 @@ static void set_app_vdesk(const char *arg);
 static void set_app_fixed(void);
 
 static struct xconfig_option evilwm_options[] = {
-	{ XCONFIG_STRING,   "fn",           &option.font },
-	{ XCONFIG_STRING,   "display",      &option.display },
-	{ XCONFIG_UINT,     "numvdesks",    &option.vdesks },
-	{ XCONFIG_STRING,   "fg",           &option.fg },
-	{ XCONFIG_STRING,   "bg",           &option.bg },
-	{ XCONFIG_STRING,   "fc",           &option.fc },
-	{ XCONFIG_INT,      "bw",           &option.bw },
-	{ XCONFIG_STR_LIST, "term",         &option.term },
-	{ XCONFIG_INT,      "snap",         &option.snap },
-	{ XCONFIG_STRING,   "mask1",        &opt_grabmask1 },
-	{ XCONFIG_STRING,   "mask2",        &opt_grabmask2 },
-	{ XCONFIG_STRING,   "altmask",      &opt_altmask },
-	{ XCONFIG_CALL_1,   "app",          &set_app },
-	{ XCONFIG_CALL_1,   "geometry",     &set_app_geometry },
-	{ XCONFIG_CALL_1,   "g",            &set_app_geometry },
-	{ XCONFIG_CALL_0,   "dock",         &set_app_dock },
-	{ XCONFIG_CALL_1,   "vdesk",        &set_app_vdesk },
-	{ XCONFIG_CALL_1,   "v",            &set_app_vdesk },
-	{ XCONFIG_CALL_0,   "fixed",        &set_app_fixed },
-	{ XCONFIG_CALL_0,   "f",            &set_app_fixed },
-	{ XCONFIG_CALL_0,   "s",            &set_app_fixed },
+	{ XCONFIG_STRING,   "fn",           { .s = &option.font } },
+	{ XCONFIG_STRING,   "display",      { .s = &option.display } },
+	{ XCONFIG_UINT,     "numvdesks",    { .u = &option.vdesks } },
+	{ XCONFIG_STRING,   "fg",           { .s = &option.fg } },
+	{ XCONFIG_STRING,   "bg",           { .s = &option.bg } },
+	{ XCONFIG_STRING,   "fc",           { .s = &option.fc } },
+	{ XCONFIG_INT,      "bw",           { .i = &option.bw } },
+	{ XCONFIG_STR_LIST, "term",         { .sl = &option.term } },
+	{ XCONFIG_INT,      "snap",         { .i = &option.snap } },
+	{ XCONFIG_STRING,   "mask1",        { .s = &opt_grabmask1 } },
+	{ XCONFIG_STRING,   "mask2",        { .s = &opt_grabmask2 } },
+	{ XCONFIG_STRING,   "altmask",      { .s = &opt_altmask } },
+	{ XCONFIG_CALL_1,   "app",          { .c1 = &set_app } },
+	{ XCONFIG_CALL_1,   "geometry",     { .c1 = &set_app_geometry } },
+	{ XCONFIG_CALL_1,   "g",            { .c1 = &set_app_geometry } },
+	{ XCONFIG_CALL_0,   "dock",         { .c0 = &set_app_dock } },
+	{ XCONFIG_CALL_1,   "vdesk",        { .c1 = &set_app_vdesk } },
+	{ XCONFIG_CALL_1,   "v",            { .c1 = &set_app_vdesk } },
+	{ XCONFIG_CALL_0,   "fixed",        { .c0 = &set_app_fixed } },
+	{ XCONFIG_CALL_0,   "f",            { .c0 = &set_app_fixed } },
+	{ XCONFIG_CALL_0,   "s",            { .c0 = &set_app_fixed } },
 #ifdef SOLIDDRAG
-	{ XCONFIG_BOOL,     "nosoliddrag",  &option.no_solid_drag },
+	{ XCONFIG_BOOL,     "nosoliddrag",  { .i = &option.no_solid_drag } },
 #endif
-	{ XCONFIG_END, NULL, NULL }
+	{ XCONFIG_END, NULL, { .i = NULL } }
 };
 
 static unsigned parse_modifiers(char *s);
@@ -125,6 +116,14 @@ int main(int argc, char *argv[]) {
 	sigaction(SIGTERM, &act, NULL);
 	sigaction(SIGINT, &act, NULL);
 	sigaction(SIGHUP, &act, NULL);
+
+	// Default options
+	xconfig_set_option(evilwm_options, "display", "");
+	xconfig_set_option(evilwm_options, "fn", DEF_FONT);
+	xconfig_set_option(evilwm_options, "fg", DEF_FG);
+	xconfig_set_option(evilwm_options, "bg", DEF_BG);
+	xconfig_set_option(evilwm_options, "fc", DEF_FC);
+	xconfig_set_option(evilwm_options, "term", DEF_TERM);
 
 	// Read configuration file
 	const char *home = getenv("HOME");

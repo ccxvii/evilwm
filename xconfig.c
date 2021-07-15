@@ -86,25 +86,34 @@ static struct xconfig_option *find_option(struct xconfig_option *options,
 static void set_option(struct xconfig_option *option, const char *arg) {
 	switch (option->type) {
 		case XCONFIG_BOOL:
-			*(int *)option->dest = 1;
+			*(int *)option->dest.i = 1;
 			break;
 		case XCONFIG_INT:
-			*(int *)option->dest = strtol(arg, NULL, 0);
+			*(int *)option->dest.i = strtol(arg, NULL, 0);
 			break;
 		case XCONFIG_UINT:
-			*(unsigned *)option->dest = strtoul(arg, NULL, 0);
+			*(unsigned *)option->dest.u = strtoul(arg, NULL, 0);
 			break;
 		case XCONFIG_STRING:
-			*(char **)option->dest = strdup(arg);
+			if (*(char **)option->dest.s) {
+				free(*(char **)option->dest.s);
+			}
+			*(char **)option->dest.s = strdup(arg);
 			break;
 		case XCONFIG_STR_LIST:
-			*(char ***)option->dest = split_string(arg);
+			if (*(char ***)option->dest.sl) {
+				for (int i = 0; (*(char ***)option->dest.sl)[i]; i++) {
+					free((*(char ***)option->dest.sl)[i]);
+				}
+				free(*(char ***)option->dest.sl);
+			}
+			*(char ***)option->dest.sl = split_string(arg);
 			break;
 		case XCONFIG_CALL_0:
-			((void (*)(void))option->dest)();
+			((void (*)(void))option->dest.c0)();
 			break;
 		case XCONFIG_CALL_1:
-			((void (*)(const char *))option->dest)(arg);
+			((void (*)(const char *))option->dest.c1)(arg);
 			break;
 		default:
 			break;
@@ -161,7 +170,7 @@ enum xconfig_result xconfig_parse_file(struct xconfig_option *options,
 enum xconfig_result xconfig_parse_cli(struct xconfig_option *options,
 		int argc, char **argv, int *argn) {
 	int _argn;
-	char *optstr;
+	const char *optstr;
 	_argn = argn ? *argn : 1;
 
 	while (_argn < argc) {
@@ -208,4 +217,11 @@ enum xconfig_result xconfig_parse_cli(struct xconfig_option *options,
 		*argn = _argn;
 	}
 	return XCONFIG_OK;
+}
+
+void xconfig_set_option(struct xconfig_option *options, const char *optstr, const char *arg) {
+	struct xconfig_option *opt = find_option(options, optstr);
+	if (opt) {
+		set_option(opt, arg);
+	}
 }

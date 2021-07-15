@@ -36,7 +36,14 @@ enum xconfig_option_type {
 struct xconfig_option {
 	enum xconfig_option_type type;
 	const char *name;
-	void *dest;
+	union {
+		int *i;
+		unsigned *u;
+		char **s;
+		char ***sl;
+		void (*c0)(void);
+		void (*c1)(const char *);
+	} dest;
 };
 
 enum xconfig_result xconfig_parse_file(struct xconfig_option *options,
@@ -44,5 +51,7 @@ enum xconfig_result xconfig_parse_file(struct xconfig_option *options,
 
 enum xconfig_result xconfig_parse_cli(struct xconfig_option *options,
 				      int argc, char **argv, int *argn);
+
+void xconfig_set_option(struct xconfig_option *options, const char *optstr, const char *arg);
 
 #endif

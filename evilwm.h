@@ -19,15 +19,15 @@
 
 struct options {
 	// Display string (e.g., ":0")
-	const char *display;
+	char *display;
 
 	// Text font
-	const char *font;
+	char *font;
 
 	// Border colours
-	const char *fg;  // selected (foreground)
-	const char *bg;  // unselected (background)
-	const char *fc;  // fixed & selected
+	char *fg;  // selected (foreground)
+	char *bg;  // unselected (background)
+	char *fc;  // fixed & selected
 
 	// Border width
 	int bw;
