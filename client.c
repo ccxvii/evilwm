@@ -34,8 +34,6 @@
 #include "screen.h"
 #include "util.h"
 
-static int send_xmessage(Window w, Atom a, long x);
-
 // Client tracking information
 struct list *clients_tab_order = NULL;
 struct list *clients_mapping_order = NULL;
@@ -123,9 +121,7 @@ void update_window_type_flags(struct client *c, unsigned type) {
 // specified window as either window or parent.  NULL if not found.
 
 struct client *find_client(Window w) {
-	struct list *iter;
-
-	for (iter = clients_tab_order; iter; iter = iter->next) {
+	for (struct list *iter = clients_tab_order; iter; iter = iter->next) {
 		struct client *c = iter->data;
 		if (w == c->parent || w == c->window)
 			return c;
@@ -255,9 +251,7 @@ void client_lower(struct client *c) {
 void set_wm_state(struct client *c, int state) {
 	// Using "long" for the type of "data" looks wrong, but the fine people
 	// in the X Consortium defined it this way (even on 64-bit machines).
-	long data[2];
-	data[0] = state;
-	data[1] = None;
+	long data[2] = { state, None };
 	XChangeProperty(display.dpy, c->window, X_ATOM(WM_STATE), X_ATOM(WM_STATE), 32,
 			PropModeReplace, (unsigned char *)data, 2);
 }
@@ -265,20 +259,21 @@ void set_wm_state(struct client *c, int state) {
 // Inform client of changed geometry by sending ConfigureNotify to its window.
 
 void send_config(struct client *c) {
-	XConfigureEvent ce;
-
-	ce.type = ConfigureNotify;
-	ce.event = c->window;
-	ce.window = c->window;
-	ce.x = c->x;
-	ce.y = c->y;
-	ce.width = c->width;
-	ce.height = c->height;
-	ce.border_width = 0;
-	ce.above = None;
-	ce.override_redirect = False;
-
-	XSendEvent(display.dpy, c->window, False, StructureNotifyMask, (XEvent *)&ce);
+	XEvent ev = {
+		.xconfigure = {
+			.type = ConfigureNotify,
+			.event = c->window,
+			.window = c->window,
+			.x = c->x,
+			.y = c->y,
+			.width = c->width,
+			.height = c->height,
+			.border_width = 0,
+			.above = None,
+			.override_redirect = False
+		}
+	};
+	XSendEvent(display.dpy, c->window, False, StructureNotifyMask, &ev);
 }
 
 // Offset client to show border according to window's gravity.  e.g.,
@@ -467,40 +462,35 @@ void remove_client(struct client *c) {
 	LOG_LEAVE();
 }
 
-// Sends WM_DELETE_WINDOW to a client to tell it to shut down.  If kill_client
-// is true, use XKillClient instead (terminates its connection to the server
-// forcibly).
+// Delete a window.  Sends WM_DELETE_WINDOW to a client if that protocol is
+// found to be supported.  Otherwise (or if forced by setting kill_client), use
+// XKillClient (terminates its connection to the server).
 
 void send_wm_delete(struct client *c, int kill_client) {
-	int i, n, found = 0;
+	_Bool delete_supported = 0;
+	int n;
 	Atom *protocols;
 
 	if (!kill_client && XGetWMProtocols(display.dpy, c->window, &protocols, &n)) {
-		for (i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 			if (protocols[i] == X_ATOM(WM_DELETE_WINDOW))
-				found++;
+				delete_supported = 1;
 		XFree(protocols);
 	}
-	if (found)
-		send_xmessage(c->window, X_ATOM(WM_PROTOCOLS), X_ATOM(WM_DELETE_WINDOW));
-	else
+	if (delete_supported) {
+		XEvent ev = {
+			.xclient = {
+				.type = ClientMessage,
+				.window = c->window,
+				.message_type = X_ATOM(WM_PROTOCOLS),
+				.format = 32,
+				.data.l = { X_ATOM(WM_DELETE_WINDOW), CurrentTime }
+			}
+		};
+		XSendEvent(display.dpy, c->window, False, NoEventMask, &ev);
+	} else {
 		XKillClient(display.dpy, c->window);
-}
-
-// Send arbitrary X Event to a client (so long as the argument is a single
-// long).
-
-static int send_xmessage(Window w, Atom a, long x) {
-	XEvent ev;
-
-	ev.type = ClientMessage;
-	ev.xclient.window = w;
-	ev.xclient.message_type = a;
-	ev.xclient.format = 32;
-	ev.xclient.data.l[0] = x;
-	ev.xclient.data.l[1] = CurrentTime;
-
-	return XSendEvent(display.dpy, w, False, NoEventMask, &ev);
+	}
 }
 
 #ifdef SHAPE

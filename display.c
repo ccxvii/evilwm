@@ -109,7 +109,9 @@ void display_open(void) {
 	display.info_window = None;
 
 	XSetErrorHandler(handle_xerror);
-	//XSynchronize(dpy, True);
+
+	// While debugging, synchronous behaviour may be desirable:
+	//XSynchronize(display.dpy, True);
 
 	// Sanity check that there's a name for each atom in the enum:
 	assert(NUM_ATOMS == (sizeof(atom_list)/sizeof(atom_list[0])));

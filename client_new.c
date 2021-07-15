@@ -114,9 +114,8 @@ void client_manage_new(Window w, struct screen *s) {
 
 #ifdef DEBUG
 	{
-		struct list *iter;
 		int i = 0;
-		for (iter = clients_tab_order; iter; iter = iter->next)
+		for (struct list *iter = clients_tab_order; iter; iter = iter->next)
 			i++;
 		LOG_DEBUG("new window %dx%d+%d+%d, wincount=%d\n", c->width, c->height, c->x, c->y, i);
 	}
@@ -138,8 +137,8 @@ void client_manage_new(Window w, struct screen *s) {
 	class = XAllocClassHint();
 	if (class) {
 		XGetClassHint(display.dpy, w, class);
-		for (struct list *aiter = applications; aiter; aiter = aiter->next) {
-			struct application *a = aiter->data;
+		for (struct list *iter = applications; iter; iter = iter->next) {
+			struct application *a = iter->data;
 			// Does resource name and class match?
 			if ((!a->res_name || (class->res_name && !strcmp(class->res_name, a->res_name)))
 					&& (!a->res_class || (class->res_class && !strcmp(class->res_class, a->res_class)))) {

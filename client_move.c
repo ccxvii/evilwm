@@ -63,18 +63,20 @@ static void snap_client(struct client *c, struct monitor *monitor) {
 	int dx, dy;
 	int dpy_width = monitor->width;
 	int dpy_height = monitor->height;
-	struct list *iter;
-	struct client *ci;
 
 	// Snap to other windows
 
 	dx = dy = option.snap;
-	for (iter = clients_tab_order; iter; iter = iter->next) {
-		ci = iter->data;
-		if (ci == c) continue;
-		if (ci->screen != c->screen) continue;
-		if (!is_fixed(ci) && ci->vdesk != c->screen->vdesk) continue;
-		if (ci->is_dock && !c->screen->docks_visible) continue;
+	for (struct list *iter = clients_tab_order; iter; iter = iter->next) {
+		struct client *ci = iter->data;
+		if (ci == c)
+			continue;
+		if (ci->screen != c->screen)
+			continue;
+		if (!is_fixed(ci) && ci->vdesk != c->screen->vdesk)
+			continue;
+		if (ci->is_dock && !c->screen->docks_visible)
+			continue;
 		if (ci->y - ci->border - c->border - c->height - c->y <= option.snap && c->y - c->border - ci->border - ci->height - ci->y <= option.snap) {
 			dx = absmin(dx, ci->x + ci->width - c->x + c->border + ci->border);
 			dx = absmin(dx, ci->x + ci->width - c->x - c->width);
@@ -95,8 +97,10 @@ static void snap_client(struct client *c, struct monitor *monitor) {
 
 	// Snap to screen border
 
-	if (abs(c->x - c->border - monitor->x) < option.snap) c->x = monitor->x + c->border;
-	if (abs(c->y - c->border - monitor->y) < option.snap) c->y = monitor->y + c->border;
+	if (abs(c->x - c->border - monitor->x) < option.snap)
+		c->x = monitor->x + c->border;
+	if (abs(c->y - c->border - monitor->y) < option.snap)
+		c->y = monitor->y + c->border;
 	if (abs(c->x + c->width + c->border - monitor->x - dpy_width) < option.snap)
 		c->x = monitor->x + dpy_width - c->width - c->border;
 	if (abs(c->y + c->height + c->border - monitor->y - dpy_height) < option.snap)
@@ -292,7 +296,7 @@ void client_move_drag(struct client *c, unsigned button) {
 // same keycode and timestamp, indicating autorepeat.
 
 static Bool predicate_keyrepeatpress(Display *dummy, XEvent *ev, XPointer arg) {
-	(void) dummy;
+	(void)dummy;
 	XEvent *release_event = (XEvent *)arg;
 	if (ev->type != KeyPress)
 		return False;

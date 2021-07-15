@@ -251,18 +251,20 @@ static unsigned parse_modifiers(char *s) {
 		{ "mod4", Mod4Mask },
 		{ "mod5", Mod5Mask }
 	};
+
 	char *tmp = strtok(s, ",+");
-	unsigned ret = 0;
-	int i;
 	if (!tmp)
 		return 0;
+
+	unsigned ret = 0;
 	do {
-		for (i = 0; i < 9; i++) {
+		for (int i = 0; i < 9; i++) {
 			if (!strcmp(modifiers[i].name, tmp))
 				ret |= modifiers[i].mask;
 		}
 		tmp = strtok(NULL, ",+");
 	} while (tmp);
+
 	return ret;
 }
 
