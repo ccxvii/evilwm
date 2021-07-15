@@ -468,8 +468,6 @@ void client_select_next(void) {
 			return;
 	} while ((!is_fixed(newc) && (newc->vdesk != newc->screen->vdesk))
 		 || (newc->is_dock && !newc->screen->docks_visible));
-	// XXX: Checking against newc->screen->vdesk implies we can Alt+Tab
-	// across screen boundaries.  Is this what we want?
 
 	if (!newc)
 		return;
