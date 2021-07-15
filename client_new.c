@@ -293,6 +293,8 @@ static void init_geometry(struct client *c) {
 	// program-specified.
 	long size_flags = get_wm_normal_hints(c);
 
+	_Bool need_send_config = 0;
+
 	// If the current window dimensions conform to the minimums specified
 	// in WM_NORMAL_HINTS, use them.  Otherwise, use the mimimums.
 	if ((attr.width >= c->min_width) && (attr.height >= c->min_height)) {
@@ -301,7 +303,7 @@ static void init_geometry(struct client *c) {
 	} else {
 		c->width = c->min_width;
 		c->height = c->min_height;
-		send_config(c);
+		need_send_config = 1;
 	}
 
 	// If the window was already visible (as we manage existing windows on
@@ -322,8 +324,11 @@ static void init_geometry(struct client *c) {
 		get_pointer_root_xy(c->screen->root, &x, &y);
 		c->x = (x * (xmax - c->border - c->width)) / xmax;
 		c->y = (y * (ymax - c->border - c->height)) / ymax;
-		send_config(c);
+		need_send_config = 1;
 	}
+
+	if (need_send_config)
+		send_config(c);
 
 	LOG_DEBUG("window started as %dx%d +%d+%d\n", c->width, c->height, c->x, c->y);
 
