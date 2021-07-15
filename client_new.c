@@ -329,6 +329,8 @@ static void init_geometry(struct client *c) {
 	if (need_send_config)
 		send_config(c);
 
+	ewmh_set_net_frame_extents(c->window, c->border);
+
 	LOG_DEBUG("window started as %dx%d +%d+%d\n", c->width, c->height, c->x, c->y);
 
 	// If the window was already viewable (existed while window manager

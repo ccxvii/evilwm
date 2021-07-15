@@ -5,9 +5,6 @@
 
 Calculate the response to _NET_REQUEST_FRAME_EXTENTS more accurately.
 
-Set _NET_FRAME_EXTENTS once known, even if not in response to
-_NET_REQUEST_FRAME_EXTENTS.
-
 Consider determining initial vdesk from focussed window.
 
 

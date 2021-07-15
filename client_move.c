@@ -431,18 +431,23 @@ void client_maximise(struct client *c, int action, int hv) {
 			}
 		}
 	}
+	_Bool change_border = 0;
 	if (c->oldw && c->oldh) {
 		// maximised - remove border
 		if (c->border) {
 			c->border = 0;
-			XSetWindowBorderWidth(display.dpy, c->parent, 0);
+			change_border = 1;
 		}
 	} else {
 		// not maximised - add border
 		if (!c->border && c->normal_border) {
 			c->border = c->normal_border;
-			XSetWindowBorderWidth(display.dpy, c->parent, c->border);
+			change_border = 1;
 		}
+	}
+	if (change_border) {
+		XSetWindowBorderWidth(display.dpy, c->parent, c->border);
+		ewmh_set_net_frame_extents(c->window, c->border);
 	}
 	ewmh_set_net_wm_state(c);
 	client_moveresizeraise(c);
