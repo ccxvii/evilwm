@@ -30,12 +30,7 @@
 struct options option = {
 	.bw = DEF_BW,
 
-#ifdef VWM
 	.vdesks = 8,
-#else
-	.vdesks = 0,
-#endif
-
 	.snap = 0,
 	.wholescreen = 0,
 

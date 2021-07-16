@@ -43,9 +43,6 @@ OPT_LDLIBS   += -lXext
 # Uncomment to enable solid window drags.  This can be slow on old systems.
 OPT_CPPFLAGS += -DSOLIDDRAG
 
-# Uncomment to support virtual desktops.
-OPT_CPPFLAGS += -DVWM
-
 # Uncomment to move pointer around on certain actions.
 #OPT_CPPFLAGS += -DWARP_POINTER
 
