@@ -7,6 +7,9 @@ Calculate the response to _NET_REQUEST_FRAME_EXTENTS more accurately.
 
 Consider determining initial vdesk from focussed window.
 
+Allow specifying a matrix for vdesk organisation, e.g., "-numvdesks 4x2".  Add
+C+A+Up/Down controls to navigate them.
+
 
 ## Intermediate tasks
 
