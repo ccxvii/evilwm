@@ -222,13 +222,13 @@ void screen_deinit(struct screen *s) {
 	free(s->monitors);
 }
 
-// Get a list of monitors for the screen.  If Randr is unavailable (or too
-// early to support querying monitors), assume a single monitor covering the
-// whole screen.
+// Get a list of monitors for the screen.  If Randr >= 1.5 is unavailable, or
+// the "wholescreen" option has been specified, assume a single monitor
+// covering the whole screen.
 
 void screen_probe_monitors(struct screen *s) {
 #if defined(RANDR) && (RANDR_MAJOR == 1) && (RANDR_MINOR >= 5)
-        if (display.have_randr) {
+        if (display.have_randr && !option.wholescreen) {
 		int nmonitors;
 		XRRMonitorInfo *monitors;
 		// Populate list of active monitors

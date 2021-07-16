@@ -4,6 +4,8 @@ Version 1.3.0, unreleased
   * Add basic multi-monitor support when Randr >= 1.5 available.
   * Remove border when window is maximised (useful for multi-monitor).
   * Set _NET_FRAME_EXTENTS whenever relevant.
+  * Add new -wholescreen option to reinstate old behaviour of treating screen
+    as one large display.
 
 Version 1.2.1, Mon Jul  5 2021
 

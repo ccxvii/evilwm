@@ -37,6 +37,7 @@ struct options option = {
 #endif
 
 	.snap = 0,
+	.wholescreen = 0,
 
 #ifdef SOLIDDRAG
 	.no_solid_drag = 0,
@@ -70,6 +71,7 @@ static struct xconfig_option evilwm_options[] = {
 	{ XCONFIG_INT,      "bw",           { .i = &option.bw } },
 	{ XCONFIG_STR_LIST, "term",         { .sl = &option.term } },
 	{ XCONFIG_INT,      "snap",         { .i = &option.snap } },
+	{ XCONFIG_BOOL,     "wholescreen",  { .i = &option.wholescreen } },
 	{ XCONFIG_STRING,   "mask1",        { .s = &opt_grabmask1 } },
 	{ XCONFIG_STRING,   "mask2",        { .s = &opt_grabmask2 } },
 	{ XCONFIG_STRING,   "altmask",      { .s = &opt_altmask } },
@@ -96,7 +98,7 @@ static void helptext(void) {
 "usage: evilwm [-display display] [-term termprog] [-fn fontname]\n"
 "              [-fg foreground] [-fc fixed] [-bg background] [-bw borderwidth]\n"
 "              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n"
-"              [-snap num] [-numvdesks num]\n"
+"              [-snap num] [-numvdesks num] [-wholescreen]\n"
 "              [-app name/class] [-g geometry] [-dock] [-v vdesk] [-fixed]\n"
 "             "
 #ifdef SOLIDDRAG

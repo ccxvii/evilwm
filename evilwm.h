@@ -38,6 +38,9 @@ struct options {
 	// Snap to border flag
 	int snap;
 
+	// Whole screen flag (ignore monitor information)
+	int wholescreen;
+
 #ifdef SOLIDDRAG
 	// Solid drag disabled flag
 	int no_solid_drag;

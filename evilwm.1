@@ -32,7 +32,7 @@
 .  hy \\n(HY
 ..
 .
-.\" Top level heading; wraps .SH
+.\" Top level heading; wraps .SH.  This seems to confuse lintian.
 .de H1
 .  if \\n(mP .pdfhref O 1 \\$*
 .  SH \\$*
@@ -72,11 +72,14 @@
 .  \}
 ..
 .
-.nr PDFOUTLINE.FOLDLEVEL 3
 .\"
-.pdfview /PageMode /UseOutlines
-.pdfinfo /Title evilwm 1.3
-.pdfinfo /Author Ciaran Anscomb
+.
+.ie \\n(mP \{\
+.  nr PDFOUTLINE.FOLDLEVEL 3
+.  pdfview /PageMode /UseOutlines
+.  pdfinfo /Title evilwm 1.3
+.  pdfinfo /Author Ciaran Anscomb
+.\}
 .
 .TH "evilwm" "1" "July 2021" "evilwm-1.3"
 .hy 0
@@ -109,6 +112,9 @@ width of window borders in pixels.
 .TP
 \f(CB\-snap\fR \fIdistance\fR
 enable snap-to-border support. \fIdistance\fR is the proximity in pixels to snap to.
+.TP
+\f(CB\-wholescreen\fR
+ignore monitor geometry and use the whole screen dimensions. This is the old behaviour from before multi-monitor support was implemented, and may still be useful, e.g., when one large monitor is driven from multiple outputs.
 .TP
 \f(CB\-numvdesks\fR \fIvalue\fR
 number of virtual desktops to provide. Defaults to 8. Any extras will only be accessible by pagers or using Control+Alt+(Left/Right).
@@ -175,16 +181,16 @@ H, J, K, L
 Move window left, down, up or right (16 pixels). Holding Shift resizes the window instead.
 .TP
 Y, U, B, N
-Move window to top-left, top-right, bottom-left or bottom-right of screen.
+Move window to the top-left, top-right, bottom-left or bottom-right of the current monitor.
 .TP
 I
 Show information about current window.
 .TP
 Equals
-Maximise current window vertically (toggle). Holding Shift toggles horizontal maximization.
+Maximise current window vertically on current monitor (toggle). Holding Shift toggles horizontal maximization.
 .TP
 X
-Maximise current window (toggle).
+Maximise current window to current monitor (toggle).
 .TP
 D
 Toggle visible state of docks (e.g., pagers and launch bars).
@@ -206,7 +212,7 @@ Switch to next higher numbered virtual desktop.
 A
 Switch to the previously selected virtual desktop.
 .PP
-In addition to the above, Alt+Tab can be used to cycle through windows on screen.
+In addition to the above, Alt+Tab can be used to cycle through windows.
 .PP
 To make \fBevilwm\fR exit, kill the process.
 .H1 FILES
@@ -215,13 +221,36 @@ To make \fBevilwm\fR exit, kill the process.
 .H1 BUGS
 .PP
 The author\[aq]s idea of friendly may differ to that of many other people.
-.H1 AUTHOR
+.H1 LICENCE
 .PP
-Written by Ciaran Anscomb <evilwm@6809.org.uk>.
+Copyright (C) 1999-2021 Ciaran Anscomb <evilwm@6809.org.uk>
 .PP
-\fBevilwm\fR was originally based on \fBaewm\fR, which was written by Decklin Foster <fosterd@hartwick.edu>.
+This is free software. You can do what you want to it, but if it breaks something, you get to pay for the counselling. The code was originally based on aewm, so this is distributed under the same terms, which follow.
+.H1 AEWM LICENCE
 .PP
-In turn, \fBaewm\fR was based on \fB9wm\fR, which was written by David Hogan <dhog@cs.su.oz.au>.
+Copyright (c) 1998-2000 Decklin Foster.
+.PP
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS", WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES OF ANY KIND. IN NO EVENT SHALL THE AUTHOR BE HELD LIABLE FOR ANY DAMAGES CONNECTED WITH THE USE OF THIS PROGRAM.
+.PP
+You are granted permission to copy, publish, distribute, and/or sell copies of this program and any modified versions or derived works, provided that this copyright and notice are not removed or altered.
+.PP
+Portions of the code were based on 9wm, which contains this license:
+.IP
+.EX
+9wm\ is\ free\ software,\ and\ is\ Copyright\ (c)\ 1994\ by\ David\ Hogan.
+Permission\ is\ granted\ to\ all\ sentient\ beings\ to\ use\ this
+software,\ to\ make\ copies\ of\ it,\ and\ to\ distribute\ those\ copies,
+provided\ that:
+\ \ (1)\ the\ copyright\ and\ licence\ notices\ are\ left\ intact
+\ \ (2)\ the\ recipients\ are\ aware\ that\ it\ is\ free\ software
+\ \ (3)\ any\ unapproved\ changes\ in\ functionality\ are\ either
+\ \ \ \ \ \ \ \ (i)\ only\ distributed\ as\ patches
+\ \ \ \ or\ (ii)\ distributed\ as\ a\ new\ program\ which\ is\ not\ called\ 9wm
+\ \ \ \ \ \ \ \ \ \ \ \ and\ whose\ documentation\ gives\ credit\ where\ it\ is\ due
+\ \ (4)\ the\ author\ is\ not\ held\ responsible\ for\ any\ defects
+\ \ \ \ \ \ or\ shortcomings\ in\ the\ software,\ or\ damages\ caused\ by\ it.
+There\ is\ no\ warranty\ for\ this\ software.\ \ Have\ a\ nice\ day.
+.EE
 .H1 SEE ALSO
 .PP
 \fBxterm\fR (1), \fBxprop\fR (1)
