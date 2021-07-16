@@ -32,7 +32,7 @@
 .  hy \\n(HY
 ..
 .
-.\" Top level heading; wraps .SH
+.\" Top level heading; wraps .SH.  This seems to confuse lintian.
 .de H1
 .  if \\n(mP .pdfhref O 1 \\$*
 .  SH \\$*
@@ -72,9 +72,5 @@
 .  \}
 ..
 .
-.nr PDFOUTLINE.FOLDLEVEL 3
 .\"
-.pdfview /PageMode /UseOutlines
-.pdfinfo /Title evilwm 1.3
-.pdfinfo /Author Ciaran Anscomb
 .

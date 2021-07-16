@@ -309,6 +309,19 @@ sub c_h1 {
 	my $date = $attrs->{'man:date'} // "";
 	my $section = $attrs->{'man:section'} // "";
 	my $dist = $attrs->{'man:dist'} // "";
+	print ".ie \\\\n(mP \\{\\\n";
+	print ".  nr PDFOUTLINE.FOLDLEVEL 3\n";
+	print ".  pdfview /PageMode /UseOutlines\n";
+	if (exists $attrs->{'pdf:title'}) {
+		print ".  pdfinfo /Title $attrs->{'pdf:title'}\n";
+	} else {
+		print ".  pdfinfo /Title $text\n";
+	}
+	if (exists $attrs->{'pdf:author'}) {
+		print ".  pdfinfo /Author $attrs->{'pdf:author'}\n";
+	}
+	print ".\\}\n";
+	print ".\n";
 	print ".TH \"$text\" \"$section\" \"$date\" \"$dist\"\n";
 	print ".hy 0\n";  # no hyphenation
 	print ".nh\n";  # no hyphenation
