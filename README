@@ -40,42 +40,48 @@ OPTIONS
               enable snap-to-border support.  distance  is  the  proximity  in
               pixels to snap to.
 
+       -wholescreen
+              ignore  monitor  geometry  and  use the whole screen dimensions.
+              This is the old behaviour from before multi-monitor support  was
+              implemented,  and  may  still  be  useful,  e.g., when one large
+              monitor is driven from multiple outputs.
+
        -numvdesks value
               number of virtual desktops to provide. Defaults to 8. Any extras
-              will    only    be    accessible    by    pagers    or     using
+              will     only    be    accessible    by    pagers    or    using
               Control+Alt+(Left/Right).
 
        -nosoliddrag
               draw a window outline while moving or resizing.
 
        -mask1 modifiers, -mask2 modifiers, -altmask modifiers
-              override  the  default  keyboard modifiers used to grab keys for
+              override the default keyboard modifiers used to  grab  keys  for
               window manager functionality.
 
               mask1 is used for most keyboard controls (default: control+alt),
-              and  mask2 is used for mouse button controls and cycling windows
-              (default: alt). altmask is  used  to  modify  the  behaviour  of
-              certain  controls  (default:  shift). Modifiers may be separated
-              with + signs. Valid modifiers are  shift,  lock,  control,  alt,
+              and mask2 is used for mouse button controls and cycling  windows
+              (default:  alt).  altmask  is  used  to  modify the behaviour of
+              certain controls (default: shift). Modifiers  may  be  separated
+              with  +  signs.  Valid  modifiers are shift, lock, control, alt,
               mod1, mod2, mod3, mod4, mod5.
 
        -app name/class
-              match  an  application  by  instance name and class (for help in
-              finding these, use  the  xprop  tool  to  extract  the  WM_CLASS
+              match an application by instance name and  class  (for  help  in
+              finding  these,  use  the  xprop  tool  to  extract the WM_CLASS
               property).
 
-              Subsequent  -geometry,  -dock,  -vdesk  and  -fixed options will
+              Subsequent -geometry, -dock,  -vdesk  and  -fixed  options  will
               apply to this match.
 
        -g, -geometry geometry
-              apply a  geometry  (using  a  standard  X  geometry  string)  to
+              apply  a  geometry  (using  a  standard  X  geometry  string) to
               applications matching the last -app.
 
        -dock  specify that application should be considered to be a dock, even
               if it lacks the appropriate property.
 
        -v, -vdesk vdesk
-              specify a default virtual desktop for applications matching  the
+              specify  a default virtual desktop for applications matching the
               last -app. Note that virtual desktops are numbered from zero.
 
        -f, -fixed
@@ -85,20 +91,20 @@ OPTIONS
 
        -V     show program version
 
-       evilwm  will  also  read  options,  one  per  line,  from a file called
-       .evilwmrc  in  the  user's  home  directory.  Options   listed   in   a
-       configuration  file  should omit the leading dash. Options specified on
+       evilwm will also read  options,  one  per  line,  from  a  file  called
+       .evilwmrc   in   the   user's  home  directory.  Options  listed  in  a
+       configuration file should omit the leading dash. Options  specified  on
        the command line override those found in the configuration file.
 
 USAGE
-       In evilwm, the focus follows the mouse pointer, and focus is  not  lost
-       if  you stray onto the root window. The current window border is shaded
-       gold (unless it is fixed, in which case blue), with other windows  left
+       In  evilwm,  the focus follows the mouse pointer, and focus is not lost
+       if you stray onto the root window. The current window border is  shaded
+       gold  (unless it is fixed, in which case blue), with other windows left
        as a dark grey.
 
-       You  can  use  the mouse to manipulate windows either by click/dragging
+       You can use the mouse to manipulate windows  either  by  click/dragging
        the single-pixel border (easier when they align with a screen edge), or
-       by  holding  down Alt and doing so anywhere in the window. The controls
+       by holding down Alt and doing so anywhere in the window.  The  controls
        are:
 
        Button 1
@@ -110,41 +116,41 @@ USAGE
        Button 3
               Lower window.
 
-       Most keyboard controls are used by holding down Control and  Alt,  then
+       Most  keyboard  controls are used by holding down Control and Alt, then
        pressing a key. Available functions are:
 
        Return Spawn new terminal.
 
-       Escape Delete  current  window.  Hold  Shift  as  well  to force kill a
+       Escape Delete current window. Hold  Shift  as  well  to  force  kill  a
               client.
 
        Insert Lower current window.
 
        H, J, K, L
-              Move window left, down, up or right (16 pixels).  Holding  Shift
+              Move  window  left, down, up or right (16 pixels). Holding Shift
               resizes the window instead.
 
        Y, U, B, N
-              Move  window  to the top-left, top-right, bottom-left or bottom-
+              Move window to the top-left, top-right, bottom-left  or  bottom-
               right of the current monitor.
 
        I      Show information about current window.
 
-       Equals Maximise current window vertically on current monitor  (toggle).
+       Equals Maximise  current window vertically on current monitor (toggle).
               Holding Shift toggles horizontal maximization.
 
        X      Maximise current window to current monitor (toggle).
 
        D      Toggle visible state of docks (e.g., pagers and launch bars).
 
-       If  compiled  with  virtual  desktop  support, these functions are also
+       If compiled with virtual desktop  support,  these  functions  are  also
        available:
 
-       F      Fix or unfix current window. Fixed windows remain  visible  when
+       F      Fix  or  unfix current window. Fixed windows remain visible when
               you switch virtual desktop.
 
-       1--8   Switch  to  specific  virtual  desktop (internally, desktops are
-              numbered from zero, so this actually switches to desktops  0--7;
+       1--8   Switch to specific virtual  desktop  (internally,  desktops  are
+              numbered  from zero, so this actually switches to desktops 0--7;
               this only becomes important if you use application matching).
 
        Left   Switch to next lower numbered virtual desktop.
