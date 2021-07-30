@@ -112,7 +112,7 @@ INSTALL_PROGRAM = $(INSTALL) -m 0755
 ############################################################################
 # You shouldn't need to change anything beyond this point
 
-version = 1.3.0
+version = 1.3.1
 distdir = evilwm-$(version)
 
 # Generally shouldn't be overridden:
