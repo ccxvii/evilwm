@@ -38,25 +38,30 @@ Starting evilwm
               #!/bin/sh
               test -f $HOME/.Xresources && xrdb -merge $HOME/.Xresources
               xsetroot -solid \#400040 -cursor_name left_ptr
-              /usr/bin/evilwm -snap 10 &
+              ( /usr/bin/evilwm -snap 10 >/dev/null 2>&1 & )
               exec xclock -digital -padding 2 -g -0+0
 
-       Note that in this case 'xclock' is the magic process (the one  that  if
-       you  kill it, your session dies). A common alternative is to run one of
-       the many 'panel' apps as your magic process. Also note that it sets the
-       cursor  shape and background colour with standard X tools (evilwm won't
-       do this for you).
+       The cursor shape and background colour are set with  standard  X  tools
+       (evilwm  won't  do  this  for  you). xclock becomes the "magic process"
+       (session terminates when it is killed). evilwm itself is started  in  a
+       subshell  otherwise  xclock would become its parent, and killing evilwm
+       to restart it may result in a zombie process. You could also avoid this
+       by  not  exec-ing the "magic process"; the shell will handle child sig-
+       nals properly.
 
-       You used to be able to configure  the  GNOME  session  manager  to  use
-       evilwm  as  its  window manager by running gconf-editor and setting the
+       See here for a  more  complete  example  of  a  .xsession  file  (xses-
+       sion.txt).  Obviously, it depends on a lot of external packages.
+
+       You  used  to  be  able  to  configure the GNOME session manager to use
+       evilwm as its window manager by running gconf-editor  and  setting  the
        key /desktop/gnome/session/required_components/windowmanager to evilwm.
-       The  package information for gconf-editor suggests this approach is out
+       The package information for gconf-editor suggests this approach is  out
        of date, however.
 
-       If you typically start X by typing startx from the console,  you  might
-       need  the  .xsession  file to be called .xinitrc. A symlink should suf-
+       If  you  typically start X by typing startx from the console, you might
+       need the .xsession file to be called .xinitrc. A  symlink  should  suf-
        fice.
 
-       After starting, you should be able to  bring  up  an  xterm  with  Con-
-       trol+Alt+Enter.  For  more information on configuring and using evilwm,
+       After  starting,  you  should  be  able  to bring up an xterm with Con-
+       trol+Alt+Enter. For more information on configuring and  using  evilwm,
        see the manual (https://www.6809.org.uk/evilwm/manual.shtml).

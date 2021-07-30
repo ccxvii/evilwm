@@ -116,15 +116,17 @@ Here's a simple example <tt>.xsession</tt> file:
 #!/bin/sh
 test -f $HOME/.Xresources &amp;&amp; xrdb -merge $HOME/.Xresources
 xsetroot -solid \#400040 -cursor_name left_ptr
-/usr/bin/evilwm -snap 10 &amp;
+( /usr/bin/evilwm -snap 10 &gt;/dev/null 2&gt;&amp;1 &amp; )
 exec xclock -digital -padding 2 -g -0+0
 </pre>
 
-<p>Note that in this case 'xclock' is the magic process (the one that if you
-kill it, your session dies).  A common alternative is to run one of the many
-'panel' apps as your magic process.  Also note that it sets the cursor shape
-and background colour with standard X tools (<i>evilwm</i> won't do this for
-you).
+<p>The cursor shape and background colour are set with standard X tools
+(<i>evilwm</i> won't do this for you).  <i>xclock</i> becomes the "magic
+process" (session terminates when it is killed).  <i>evilwm</i> itself is
+started in a subshell otherwise <i>xclock</i> would become its parent, and
+killing <i>evilwm</i> to restart it may result in a zombie process.  You could
+also avoid this by not <code>exec</code>-ing the "magic process"; the shell
+will handle child signals properly.
 
 <p><a href='xsession.txt'>See here for a more complete example of a
 <tt>.xsession</tt> file</a>.  Obviously, it depends on a lot of external
