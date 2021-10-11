@@ -41,8 +41,14 @@ static void draw_outline(struct client *c) {
 		c->width + 2*c->border-1, c->height + 2*c->border-1);
 
 #ifndef INFOBANNER_MOVERESIZE
-	snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
-			(c->height-c->base_height)/height_inc, c->x, c->y);
+	if (width_inc > 1 || height_inc > 1) {
+		snprintf(buf, sizeof(buf), "%dx%d",
+			(c->width-c->base_width)/width_inc,
+			(c->height-c->base_height)/height_inc);
+	} else {
+		snprintf(buf, sizeof(buf), "%dx%d", c->width, c->height);
+	}
+
 	XDrawString(display.dpy, c->screen->root, c->screen->invert_gc,
 		c->x + c->width - XTextWidth(display.font, buf, strlen(buf)) - SPACE,
 		c->y + c->height - SPACE,
