@@ -3,6 +3,13 @@
 
 #define KEY_NEXT        XK_Tab
 #define KEY_NEW         XK_Return
+
+#define KEY_TOPLEFT    XK_Home
+#define KEY_TOPRIGHT    XK_Prior
+#define KEY_BOTTOMLEFT  XK_End
+#define KEY_BOTTOMRIGHT XK_Next
+
+/*
 #ifndef QWERTZ_KEYMAP
 # define KEY_TOPLEFT    XK_y
 #else
@@ -11,6 +18,8 @@
 #define KEY_TOPRIGHT    XK_u
 #define KEY_BOTTOMLEFT  XK_b
 #define KEY_BOTTOMRIGHT XK_n
+*/
+
 #define KEY_LEFT        XK_h
 #define KEY_RIGHT       XK_l
 #define KEY_DOWN        XK_j
