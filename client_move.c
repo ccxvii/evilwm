@@ -223,6 +223,17 @@ void client_move_drag(struct client *c, unsigned button) {
 	// Dragging always raises.
 	client_raise(c);
 
+	// Unmaximize when moving.
+	{
+		int hv = 0;
+		if (c->oldw)
+			hv |= MAXIMISE_VERT;
+		if (c->oldh)
+			hv |= MAXIMISE_HORZ;
+		if (hv)
+			client_maximise(c, NET_WM_STATE_REMOVE, hv);
+	}
+
 	// Initial pointer and window positions; new coordinates calculated
 	// relative to these.
 	int x1, y1;
