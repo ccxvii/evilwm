@@ -251,8 +251,10 @@ void client_move_drag(struct client *c, unsigned button) {
 					draw_outline(c);  // erase
 					XUngrabServer(display.dpy);
 				}
-				c->x = old_cx + (ev.xmotion.x - x1);
-				c->y = old_cy + (ev.xmotion.y - y1);
+				if (c->oldw == 0)
+					c->x = old_cx + (ev.xmotion.x - x1);
+				if (c->oldh == 0)
+					c->y = old_cy + (ev.xmotion.y - y1);
 				if (option.snap && !(ev.xmotion.state & altmask))
 					snap_client(c, monitor);
 
